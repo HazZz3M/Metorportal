@@ -413,8 +413,25 @@
             }
 
             .header {
-                padding: 20px;
+                padding: 16px;
                 border-bottom: 1px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .header .actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: flex-start;
+                align-items: center;
+            }
+
+            .header #currentCompanyTag {
+                width: 100%;
+                margin-bottom: 4px;
+                font-size: 11px;
             }
 
             .header h1 {
@@ -2980,7 +2997,7 @@
          * 1. Deploy your Apps Script as a Web App (Anyone with access)
          * 2. Paste the executable URL (/exec) below
          */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyjB5RvX7NOWEdIsyb82Oxu9AbiAIb9VuAzGv31lxi-uLn-B4zBZVZMxIj7W11xNu9o/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCFQjeD-nOOTAt2LMZOBfRC6hcXTMol9tMB79hcV22c2HIBabg3xbDMtkMmiaTdk-A/exec";
 
         // google.script.run Bridge (Shim) for environments outside of GAS (like GitHub Pages)
         if (typeof google === 'undefined' || !google.script || !google.script.run) {
@@ -3079,7 +3096,7 @@
             },
             ar: {
                 brand: "بوابة الموجه", tab_info: "معلومات", tab_feedbacks: "التقرير", signin_title: "تسجيل الدخول",
-                signin_tag: "الوصول إلى الشركات المخصصة لك", label_round: "الدورات المتاحة ", loading_rounds: " جاري البحث عن الدورات المتاحة ...",
+                signin_tag: "الوصول إلى الشركات المخصصة لك", label_round: "الدورات المتاحة", loading_rounds: "جاري البحث عن الدورات المتاحة ...",
                 label_mentor: "اختر اسم الموجه", select_round_first: "اختر الدورة أولاً", label_pin: "رمز الدخول (إن وجد)",
                 btn_signin: "تسجيل الدخول", mentor_title: "الموجه", btn_refresh: "تحديث", btn_logout: "خروج",
                 label_company: "الشركة", label_start_date: "تاريخ البدء", label_stage: "المرحلة", label_traction: "النمو",
