@@ -2485,6 +2485,7 @@
         let followupFilterAssigned = true;
         let allCompanies = []; // Global store for form
         let isFormDirty = false;
+        let lastLoadedDay = null;
 
         const $ = (id) => document.getElementById(id);
         const markClean = () => { isFormDirty = false; };
@@ -2629,6 +2630,7 @@
             $('feedbackModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
             markClean(); // Reset dirty flag on open
+            lastLoadedDay = null;
             if (followUpData.length === 0) {
                 loadFollowUpLazy(() => refreshFDayOptions(presetCompany || ''));
             } else {
@@ -2640,6 +2642,8 @@
         const refreshFDayOptions = (companyName) => {
             const lang = document.documentElement.getAttribute('lang') || 'ar';
             const submittedText = i18n[lang].submitted_edit;
+            const isMobile = window.innerWidth <= 600;
+            const mobileIndicator = '(✓)';
             const fDay = $('fDay');
             if (!fDay) return;
             const companyData = followUpData.find(c => c.company.toLowerCase() === companyName.toLowerCase());
@@ -2660,10 +2664,12 @@
                         (session.status && session.status.toString().trim() !== '')
                     );
                     if (isSubmitted) {
-                        label += ' ' + submittedText;
+                        label += ' ' + (isMobile ? mobileIndicator : submittedText);
                     }
                 }
                 opt.textContent = label;
+                opt.label = label; // For mobile compatibility
+                opt.text = label;
             });
         };
         const closeFeedbackModal = () => {
@@ -2674,6 +2680,7 @@
             $('feedbackModal').style.display = 'none';
             document.body.style.overflow = 'auto';
             markClean();
+            lastLoadedDay = null;
         };
 
         const openDiagnoseModal = () => {
@@ -2993,6 +3000,7 @@
         function selectCompanyForForm(name) {
             $('fCompanyName').value = name;
             $('companyResults').style.display = 'none';
+            lastLoadedDay = null;
             refreshFDayOptions(name);
         }
 
@@ -3403,13 +3411,17 @@
                             else s.classList.remove('active');
                         });
                         
+                        lastLoadedDay = this.value; // Track that we loaded this day
                         $('fSubmitBtn').textContent = i18n[lang].btn_save_changes;
                     } else {
-                        // Reset if switching to empty day
-                        ['fStatus', 'fAchievements', 'fActionSteps'].forEach(id => $(id).value = '');
-                        $('fScore').value = '0.0';
-                        $('fScoreValue').textContent = '0.0';
-                        document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                        // NEW behavior: Only reset if we were previously viewing a loaded day
+                        if (lastLoadedDay !== null) {
+                            ['fStatus', 'fAchievements', 'fActionSteps'].forEach(id => $(id).value = '');
+                            $('fScore').value = '0.0';
+                            $('fScoreValue').textContent = '0.0';
+                            document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                        }
+                        lastLoadedDay = null;
                         $('fSubmitBtn').textContent = i18n[lang].btn_submit;
                     }
                     
