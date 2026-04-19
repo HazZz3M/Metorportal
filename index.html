@@ -808,6 +808,85 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Round Cards UI */
+        .round-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .round-card {
+            background: var(--card-2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .round-card:hover {
+            border-color: var(--accent);
+            background: rgba(67, 56, 202, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .round-card.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(67, 56, 202, 0.2);
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
         .container {
             flex: 1;
             display: flex;
@@ -2189,13 +2268,13 @@
                     <div class="content">
                         <div id="loginError" class="error" role="alert" aria-live="assertive"></div>
                         <div class="login-inputs">
-                            <div class="form-group">
-                                <label for="roundId" data-i18n="label_round">Select Round</label>
-                                <div class="select-wrapper">
-                                    <select id="roundId" required>
-                                        <option value="" data-i18n="loading_rounds">Loading rounds...</option>
-                                    </select>
-                                </div>
+                          <div class="form-group">
+                            <label data-i18n="label_round">Select Round</label>
+                            <input type="hidden" id="roundId">
+                            <div id="roundCards" class="round-cards-container">
+                                <div style="color:var(--muted); font-size:13px; grid-column: 1/-1" data-i18n="loading_rounds">Loading rounds...</div>
+                            </div>
+                        </div>      </div>
                             </div>
                             <div class="form-group">
                                 <label for="mentorName" data-i18n="label_mentor">Select Mentor Name</label>
@@ -2389,6 +2468,7 @@
                     <div class="content">
                         <div class="nav-tabs" style="display: flex; margin-bottom: 24px;">
                             <div class="tab active" onclick="switchAdminTab('stats', this)">الإحصائيات</div>
+                            <div class="tab" onclick="switchAdminTab('management', this)">إدارة الموجهين والدورات</div>
                             <div class="tab" onclick="switchAdminTab('settings', this)">إعدادات الربط</div>
                         </div>
 
@@ -2421,6 +2501,35 @@
                                     <tbody id="adminMentorsTable">
                                         <!-- Data populated via JS -->
                                     </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="adminManagementView" style="display:none">
+                            <h3 style="margin-bottom:16px;">إدارة الدورات</h3>
+                            <div class="admin-table-container" style="margin-bottom:32px;">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم الدورة</th>
+                                            <th style="text-align:center">الحالة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminRoundsTable"></tbody>
+                                </table>
+                            </div>
+
+                            <h3 style="margin-bottom:16px;">إدارة الموجهين (الرمز السري)</h3>
+                            <div class="admin-table-container">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم الموجه</th>
+                                            <th style="text-align:center">الرمز السري (PIN)</th>
+                                            <th style="text-align:center">الإجراء</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminPinsTable"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -2850,7 +2959,7 @@
          * 1. Deploy your Apps Script as a Web App (Anyone with access)
          * 2. Paste the executable URL (/exec) below
          */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz-Acdm4X7v1RdJbTKj3Ph9Vsm8kDXNaVP7dVh-6tGSglD3eyBdc94moYt5rmNfRQXE/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyjB5RvX7NOWEdIsyb82Oxu9AbiAIb9VuAzGv31lxi-uLn-B4zBZVZMxIj7W11xNu9o/exec";
 
         // google.script.run Bridge (Shim) for environments outside of GAS (like GitHub Pages)
         if (typeof google === 'undefined' || !google.script || !google.script.run) {
@@ -3193,13 +3302,9 @@
             tabs.forEach(t => t.classList.remove('active'));
             el.classList.add('active');
 
-            if (tab === 'stats') {
-                $('adminStatsView').style.display = 'block';
-                $('adminSettingsView').style.display = 'none';
-            } else {
-                $('adminStatsView').style.display = 'none';
-                $('adminSettingsView').style.display = 'block';
-            }
+            $('adminStatsView').style.display = tab === 'stats' ? 'block' : 'none';
+            $('adminManagementView').style.display = tab === 'management' ? 'block' : 'none';
+            $('adminSettingsView').style.display = tab === 'settings' ? 'block' : 'none';
         };
 
         const loadAdminStats = () => {
@@ -3292,6 +3397,10 @@
                 $('linkReports').href = data.reportUrl;
                 $('linkDiag').href = data.diagnoseUrl;
 
+                // Populate Management Tab
+                updateAdminRoundsTable(data.rounds, data.disabledRounds);
+                updateAdminPinsTable(Object.keys(data.mentors), data.mentorPins);
+
             }).withFailureHandler(function (err) {
                 hideLoading();
                 toast(err.message);
@@ -3316,6 +3425,50 @@
                 row.classList.add('expanded');
                 details.classList.add('show');
             }
+        };
+
+        const updateAdminRoundsTable = (rounds, disabled) => {
+            const list = $('adminRoundsTable');
+            list.innerHTML = rounds.map(r => `
+                <tr>
+                    <td><div style="font-weight:700">${r.label} (${r.id})</div></td>
+                    <td style="text-align:center">
+                        <label class="switch">
+                            <input type="checkbox" ${!disabled[r.id] ? 'checked' : ''} onchange="setRoundActive('${r.id}', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </td>
+                </tr>
+            `).join('');
+        };
+
+        const updateAdminPinsTable = (mentors, pins) => {
+            const list = $('adminPinsTable');
+            list.innerHTML = mentors.sort().map(m => `
+                <tr>
+                    <td><div style="font-weight:700">${m}</div></td>
+                    <td style="text-align:center">
+                        <input type="text" id="pin-${m}" value="${pins[m] || ''}" placeholder="لا يوجد رمز" 
+                            style="width: 100px; text-align: center; font-size: 13px; padding: 4px; border-radius: 4px; border: 1px solid var(--border)">
+                    </td>
+                    <td style="text-align:center">
+                        <button class="btn secondary" style="padding: 4px 12px; font-size: 12px" onclick="saveMentorPinUI('${m}')">حفظ</button>
+                    </td>
+                </tr>
+            `).join('');
+        };
+
+        const setRoundActive = (id, active) => {
+            google.script.run.withSuccessHandler(() => {
+                toast(`تم ${active ? 'تفعيل' : 'تعطيل'} الدورة ${id}`);
+            }).toggleRoundStatus(id, active);
+        };
+
+        const saveMentorPinUI = (name) => {
+            const pin = $(`pin-${name}`).value;
+            google.script.run.withSuccessHandler(() => {
+                toast(`تم تحديث الرمز للموجه ${name}`);
+            }).updateMentorPin(name, pin);
         };
 
         const checkDevPass = (val) => {
@@ -3527,34 +3680,40 @@
             };
 
             google.script.run.withSuccessHandler(function (rounds) {
-                const rSel = $('roundId');
-                rSel.innerHTML = '<option value="">Select Round</option>';
-                rounds.forEach(r => {
+                const container = $('roundCards');
+                if (rounds.length === 0) {
+                    container.innerHTML = '<div style="color:var(--muted); font-size:13px; grid-column: 1/-1">No active rounds available</div>';
+                    return;
+                }
+                
+                container.innerHTML = rounds.map(r => `
+                    <div class="round-card" onclick="selectRoundCard('${r.id}', this)">
+                        ${r.label}
+                    </div>
+                `).join('');
+            }).getRounds(false);
+        }
+
+        function selectRoundCard(id, el) {
+            // Remove active from all siblings
+            const parent = el.parentElement;
+            parent.querySelectorAll('.round-card').forEach(c => c.classList.remove('active'));
+            // Set active
+            el.classList.add('active');
+            // Set hidden value
+            $('roundId').value = id;
+            
+            // Trigger mentor loading
+            const mSel = $('mentorName');
+            mSel.innerHTML = '<option value="">Loading mentors...</option>';
+            google.script.run.withSuccessHandler(function (list) {
+                mSel.innerHTML = '<option value="">Select Mentor Name</option>';
+                list.forEach(name => {
                     const opt = document.createElement('option');
-                    opt.value = r.id;
-                    opt.textContent = r.label;
-                    rSel.appendChild(opt);
+                    opt.value = opt.textContent = name;
+                    mSel.appendChild(opt);
                 });
-
-                rSel.addEventListener('change', function () {
-                    const r = this.value;
-                    if (!r) {
-                        $('mentorName').innerHTML = '<option value="">Select round first</option>';
-                        return;
-                    }
-
-                    $('mentorName').innerHTML = '<option value="">Loading mentors...</option>';
-                    google.script.run.withSuccessHandler(function (list) {
-                        const mSel = $('mentorName');
-                        mSel.innerHTML = '<option value="">Select Mentor Name</option>';
-                        list.forEach(name => {
-                            const opt = document.createElement('option');
-                            opt.value = opt.textContent = name;
-                            mSel.appendChild(opt);
-                        });
-                    }).getMentors(r);
-                });
-            }).getRounds();
+            }).getMentors(id);
         }
 
         function renderCompanySearchResults(search) {
