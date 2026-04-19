@@ -1385,10 +1385,52 @@
             line-height: 1.6;
             color: var(--muted);
             white-space: pre-wrap;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
             overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            transition: max-height 0.3s ease;
+        }
+
+        .f-session-actions.expanded {
+            display: block;
+            -webkit-line-clamp: unset;
+            max-height: 2000px;
+        }
+
+        .show-more-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            padding: 0;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: left;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .show-more-btn:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .f-session-section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .f-section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--muted);
+            opacity: 0.8;
+            margin-bottom: 2px;
         }
 
         .f-session-file {
@@ -2432,7 +2474,7 @@
          * 1. Deploy your Apps Script as a Web App (Anyone with access)
          * 2. Paste the executable URL (/exec) below
          */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwk6jHP4byq491GCIqAe8Uv8M_8bCrPNCKJ5bkmtwZrFxzDKnm0Upwfnbp07q6K5AMR/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbc74CcHND8M0-sXxLRZ0_VDUKlTUWElPqhkNzgcTVZpvLZb19oQMJ2twT70IlS4If/exec";
 
         // google.script.run Bridge (Shim) for environments outside of GAS (like GitHub Pages)
         if (typeof google === 'undefined' || !google.script || !google.script.run) {
@@ -2736,7 +2778,6 @@
             }).withFailureHandler(function (err) {
                 hideLoading();
                 toast('Error checking existing data: ' + err.message);
-                $('diagnoseModal').style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             }).getDiagnoseData(company);
         };
@@ -2783,7 +2824,6 @@
                 else x.classList.remove('active');
             });
 
-            // Update counters
             ['efStatus', 'efAchievements', 'efActions'].forEach(id => updateCharCount($(id)));
 
             $('editFollowupModal').style.display = 'flex';
@@ -2812,7 +2852,6 @@
                 currentMentor = name;
                 currentRound = round;
 
-                // Explicitly show application components
                 $('mentorHeader').textContent = currentMentor;
                 $('loginPanel').style.display = 'none';
                 $('appPanel').style.display = 'block';
@@ -2849,7 +2888,6 @@
             const sel = $('companySelect');
             sel.value = name;
             fetchDetails(name);
-            // Re-populate to update active class
             populateMentorDropdown(allCompanies);
         }
 
@@ -2858,8 +2896,6 @@
             const dd = $('mentorDropdown');
             const btn = $('mentorHeaderTrigger');
             const isVisible = dd.style.display === 'block';
-
-            // Close all first (just in case)
             dd.style.display = isVisible ? 'none' : 'block';
             if (isVisible) btn.classList.remove('open');
             else btn.classList.add('open');
@@ -2870,7 +2906,6 @@
             const selValue = $('companySelect').value;
 
             google.script.run.withSuccessHandler(function (data) {
-                // 1. Mentors
                 const sel = $('companySelect');
                 const oldVal = sel.value;
                 sel.innerHTML = '<option value="">Select Startup</option>';
@@ -2881,23 +2916,13 @@
                 });
                 if (oldVal && [...sel.options].some(o => o.value === oldVal)) sel.value = oldVal;
 
-                // 2. Details
-                setSkeleton(false); // Always turn off skeleton on data return
+                setSkeleton(false);
                 if (data.details) {
-                    $('descV').textContent = data.details.description || '—';
-                    $('startV').textContent = data.details.startDate || '—';
-                    $('stageV').textContent = data.details.stage || '—';
-                    $('tractV').textContent = data.details.traction || '—';
-                    $('revV').textContent = data.details.annualRevenue || '—';
-                    renderDetails(data.details); // Ensure full sync
+                    renderDetails(data.details);
                 }
 
-                // 3. Form Companies
                 allCompanies = data.allCompanies;
-
-                // 4. Populate Header Dropdown
                 populateMentorDropdown(allCompanies);
-
                 adaptUI();
                 hideLoading();
                 if (isInitial) toast('Signed in');
@@ -2935,8 +2960,6 @@
         }
 
         function bootstrapInitial() {
-            // Get Rounds first
-            // New Actions
             $('diagnoseBtn').onclick = openDiagnoseModal;
             $('infoCreateFeedbackBtn').onclick = () => {
                 const company = $('companySelect').value;
@@ -2944,7 +2967,6 @@
                 openFeedbackModal(company);
             };
 
-            // Existing setup persists below...
             google.script.run.withSuccessHandler(function (rounds) {
                 const rSel = $('roundId');
                 rSel.innerHTML = '<option value="">Select Round</option>';
@@ -2973,27 +2995,23 @@
                         });
                     }).getMentors(r);
                 });
-
             }).getRounds();
         }
 
         function renderCompanySearchResults(search) {
             const results = $('companyResults');
             const term = search.toLowerCase();
-
             const filtered = allCompanies.filter(c => c.name.toLowerCase().includes(term));
-
             if (filtered.length === 0) {
                 results.style.display = 'none';
                 return;
             }
-
             results.innerHTML = filtered.map(c => `
-        <div class="search-item ${c.isAssigned ? 'assigned' : ''}" onclick="selectCompanyForForm('${c.name.replace(/'/g, "\\'")}')">
-          <span dir="auto">${c.name}</span>
-          ${c.isAssigned ? '<span class="a-tag">Assigned</span>' : ''}
-        </div>
-      `).join('');
+                <div class="search-item ${c.isAssigned ? 'assigned' : ''}" onclick="selectCompanyForForm('${c.name.replace(/'/g, "\\'")}')">
+                  <span dir="auto">${c.name}</span>
+                  ${c.isAssigned ? '<span class="a-tag">Assigned</span>' : ''}
+                </div>
+            `).join('');
             results.style.display = 'block';
         }
 
@@ -3007,7 +3025,6 @@
         function renderFollowUp() {
             const container = $('followupList');
             const search = $('followupFilter').value.trim().toLowerCase();
-
             const filtered = followUpData.filter(item => {
                 const matchesSearch = item.company.toLowerCase().includes(search);
                 const matchesAssigned = !followupFilterAssigned || item.isAssigned;
@@ -3019,8 +3036,9 @@
                 return;
             }
 
+            const lang = document.documentElement.getAttribute('lang') || 'ar';
+
             container.innerHTML = filtered.map(item => {
-                // BUG FIX: Show sessions that have EITHER actions, score, or file
                 const activeSessions = item.sessions.filter(s =>
                     (s.actions && s.actions.toString().trim() !== '') ||
                     (s.score && s.score.toString().trim() !== '') ||
@@ -3036,31 +3054,69 @@
               ${item.isAssigned ? '<span class="tag" style="color:var(--accent)">Assigned to you</span>' : ''}
             </div>
             <div class="f-sessions">
-              ${activeSessions.map(s => `
-                <div class="f-session" onclick="openModal('${item.company} - Session ${s.num}', \`${(s.actions || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">
-                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              ${activeSessions.map(s => {
+                    const isOwner = s.mentor && currentMentor && s.mentor.toLowerCase() === currentMentor.toLowerCase();
+                    const hasLongActions = s.actions && s.actions.length > 150;
+                    const hasLongAchievements = s.achievements && s.achievements.length > 150;
+                    const hasLongStatus = s.status && s.status.length > 150;
+
+                    return `
+                <div class="f-session" style="${isOwner ? 'cursor: pointer;' : 'cursor: default'}" onclick="${isOwner ? `openEditFollowupModal('${item.company.replace(/'/g, "\\'")}', ${s.num}, \`${(s.status || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.achievements || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.actions || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, '${s.score}')` : ''}">
+                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
                       <div class="f-session-num">Session ${s.num}</div>
-                      ${item.isAssigned ? `
-                        <button class="btn secondary" style="min-height:32px; padding:4px 8px; font-size:11px;" onclick="event.stopPropagation(); openEditFollowupModal('${item.company.replace(/'/g, "\\'")}', ${s.num}, \`${(s.status || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.achievements || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.actions || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, '${s.score}')">
+                      ${isOwner ? `
+                        <button class="btn secondary" style="min-height:36px; padding:6px 12px; font-size:13px; border-radius:12px; background: rgba(79, 70, 229, 0.1);" onclick="event.stopPropagation(); openEditFollowupModal('${item.company.replace(/'/g, "\\'")}', ${s.num}, \`${(s.status || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.achievements || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.actions || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, '${s.score}')">
                           ✏️ Edit
                         </button>
-                      ` : ''}
+                      ` : '<span class="tag" style="font-size: 10px; padding: 4px 8px; opacity: 0.6;">Read Only</span>'}
                    </div>
-                  <div class="f-session-score" dir="auto">${s.score ? 'Score: ' + s.score : 'No score'}</div>
-                  <div class="f-session-actions" dir="auto" style="max-height: 100px; overflow: hidden; position: relative;">
-                    ${s.actions}
-                    ${(s.actions && s.actions.length > 100) ? '<div style="position: absolute; bottom: 0; left: 0; right: 0; height: 30px; background: linear-gradient(transparent, var(--card-2));"></div>' : ''}
-                  </div>
-                  <a href="${s.file || '#'}" target="_blank" class="f-session-file ${s.file ? '' : 'disabled'}" dir="auto" onclick="${s.file ? 'event.stopPropagation()' : 'event.preventDefault(); event.stopPropagation()'}">
-                    ${s.file ? '📎 View Uploaded File' : '(No Uploaded Files)'}
-                  </a>
+
+                   <div class="f-session-score" dir="auto">
+                      ${[1, 2, 3, 4, 5].map(v => `<span style="color: ${v <= (s.score || 0) ? '#fbbf24' : 'rgba(255,255,255,0.1)'};">★</span>`).join('')}
+                      <span style="font-size: 12px; margin-left: 4px; opacity: 0.8;">${s.score || '0.0'}</span>
+                   </div>
+
+                   <div class="f-session-section">
+                      <div class="f-section-label">${lang === 'ar' ? 'الحالة الحالية' : 'Current Status'}</div>
+                      <div class="f-session-actions" dir="auto">${s.status || '—'}</div>
+                      ${hasLongStatus ? `<button class="show-more-btn" onclick="event.stopPropagation(); toggleCardText(this)">${lang === 'ar' ? 'عرض المزيد' : 'Show More'}</button>` : ''}
+                   </div>
+
+                   <div class="f-session-section">
+                      <div class="f-section-label">${lang === 'ar' ? 'أبرز الإنجازات' : 'Key Achievements'}</div>
+                      <div class="f-session-actions" dir="auto">${s.achievements || '—'}</div>
+                      ${hasLongAchievements ? `<button class="show-more-btn" onclick="event.stopPropagation(); toggleCardText(this)">${lang === 'ar' ? 'عرض المزيد' : 'Show More'}</button>` : ''}
+                   </div>
+
+                   <div class="f-session-section">
+                      <div class="f-section-label">${lang === 'ar' ? 'خطوات العمل' : 'Action Steps'}</div>
+                      <div class="f-session-actions" dir="auto">${s.actions || '—'}</div>
+                      ${hasLongActions ? `<button class="show-more-btn" onclick="event.stopPropagation(); toggleCardText(this)">${lang === 'ar' ? 'عرض المزيد' : 'Show More'}</button>` : ''}
+                   </div>
+
+                   <a href="${s.file || '#'}" target="_blank" class="f-session-file ${s.file ? '' : 'disabled'}" dir="auto" onclick="${s.file ? 'event.stopPropagation()' : 'event.preventDefault(); event.stopPropagation()'}">
+                     ${s.file ? (lang === 'ar' ? '📎 عرض الملف المرفق' : '📎 View Uploaded File') : (lang === 'ar' ? '(لا يوجد ملفات)' : '(No Uploaded Files)')}
+                   </a>
                 </div>
-              `).join('')}
+              `}).join('')}
             </div>
           </div>
         `;
             }).join('');
         }
+
+        function toggleCardText(btn) {
+            const container = btn.previousElementSibling;
+            const lang = document.documentElement.getAttribute('lang') || 'ar';
+            if (container.classList.contains('expanded')) {
+                container.classList.remove('expanded');
+                btn.textContent = lang === 'ar' ? 'عرض المزيد' : 'Show More';
+            } else {
+                container.classList.add('expanded');
+                btn.textContent = lang === 'ar' ? 'عرض أقل' : 'Show Less';
+            }
+        }
+
 
         function fetchDetails(company) {
             setSkeleton(true);
