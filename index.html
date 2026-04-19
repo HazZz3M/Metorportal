@@ -439,8 +439,8 @@
 
             .content {
                 padding: 20px;
-                padding-bottom: 140px;
-                /* Ensures content clears the mobile bottom nav */
+                padding-bottom: 160px;
+                /* Ensures content clears the mobile bottom nav and FAB */
                 width: 100%;
             }
 
@@ -643,7 +643,7 @@
             border-radius: 24px;
             box-shadow: var(--shadow-premium);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -766,12 +766,14 @@
         }
 
         .content {
-            padding: 24px
+            padding: 24px;
+            padding-bottom: 100px;
         }
 
         @media (max-width: 480px) {
             .content {
                 padding: 16px;
+                padding-bottom: 160px;
             }
         }
 
@@ -1326,7 +1328,8 @@
 
         @media (max-width: 480px) {
             .f-header {
-                flex-direction: row; /* Keep row for avg score */
+                flex-direction: row;
+                /* Keep row for avg score */
                 align-items: center;
                 padding: 16px;
             }
@@ -1350,7 +1353,8 @@
         }
 
         .f-card.expanded .f-sessions {
-            max-height: 5000px; /* High enough to show all */
+            max-height: 5000px;
+            /* High enough to show all */
         }
 
         @media (max-width: 480px) {
@@ -3495,12 +3499,12 @@
                 const lang = document.documentElement.getAttribute('lang') || 'ar';
                 if (this.value) {
                     this.closest('.select-wrapper').classList.remove('error-glow');
-                    
+
                     const companyName = $('fCompanyName').value;
                     const dayNum = parseInt(this.value.split('_')[1]);
                     const companyData = followUpData.find(c => c.company.toLowerCase() === companyName.toLowerCase());
                     const session = companyData ? companyData.sessions.find(s => s.num === dayNum) : null;
-                    
+
                     const isSubmitted = session && (
                         (session.actions && session.actions.toString().trim() !== '') ||
                         (session.score && session.score.toString().trim() !== '') ||
@@ -3511,7 +3515,7 @@
                         $('fStatus').value = session.status || '';
                         $('fAchievements').value = session.achievements || '';
                         $('fActionSteps').value = session.actions || '';
-                        
+
                         const score = parseFloat(session.score || 0);
                         $('fScore').value = score.toFixed(1);
                         $('fScoreValue').textContent = score.toFixed(1);
@@ -3519,7 +3523,7 @@
                             if (parseInt(s.getAttribute('data-value')) <= score) s.classList.add('active');
                             else s.classList.remove('active');
                         });
-                        
+
                         lastLoadedDay = this.value; // Track that we loaded this day
                         $('fSubmitBtn').textContent = i18n[lang].btn_save_changes;
                     } else {
@@ -3533,7 +3537,7 @@
                         lastLoadedDay = null;
                         $('fSubmitBtn').textContent = i18n[lang].btn_submit;
                     }
-                    
+
                     // Update counters
                     ['fStatus', 'fAchievements', 'fActionSteps'].forEach(id => updateCharCount($(id)));
                 }
