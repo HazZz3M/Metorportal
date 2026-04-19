@@ -1365,13 +1365,13 @@
 
         .f-session {
             background: var(--card);
-            padding: 24px;
+            padding: 0; /* Changed to handle internal headers */
             display: flex;
             flex-direction: column;
-            gap: 12px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-bottom: 1px solid var(--border);
+            overflow: hidden;
         }
 
         [data-theme="dark"] .f-session {
@@ -1384,13 +1384,57 @@
             border-color: var(--accent);
         }
 
+        .f-session-header {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(51, 65, 85, 0.01);
+            transition: background 0.2s;
+        }
+
+        .f-session:hover .f-session-header {
+            background: rgba(79, 70, 229, 0.04);
+        }
+
+        .f-session-details {
+            padding: 0 24px;
+            max-height: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+        }
+
+        .f-session.expanded .f-session-details {
+            padding: 12px 24px 24px;
+            max-height: 2000px;
+            opacity: 1;
+        }
+
         .f-session-num {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text);
             text-transform: uppercase;
             font-weight: 800;
-            letter-spacing: 1px;
-            opacity: 0.6;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .f-session-num::before {
+            content: '▶';
+            font-size: 10px;
+            transition: transform 0.3s;
+            color: var(--accent);
+        }
+
+        .f-session.expanded .f-session-num::before {
+            transform: rotate(90deg);
         }
 
         .f-session-score {
@@ -3114,42 +3158,45 @@
                     const hasLongStatus = s.status && s.status.length > 150;
 
                     return `
-                <div class="f-session" style="${isOwner ? 'cursor: pointer;' : 'cursor: default'}" onclick="${isOwner ? `openEditFollowupModal('${item.company.replace(/'/g, "\\'")}', ${s.num}, \`${(s.status || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.achievements || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.actions || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, '${s.score}')` : ''}">
-                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                <div class="f-session" onclick="toggleSession(this)">
+                   <div class="f-session-header">
                       <div class="f-session-num">Session ${s.num}</div>
-                      ${isOwner ? `
-                        <button class="btn secondary" style="min-height:36px; padding:6px 12px; font-size:13px; border-radius:12px; background: rgba(79, 70, 229, 0.1);" onclick="event.stopPropagation(); openEditFollowupModal('${item.company.replace(/'/g, "\\'")}', ${s.num}, \`${(s.status || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.achievements || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.actions || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, '${s.score}')">
-                          ✏️ Edit
-                        </button>
-                      ` : '<span class="tag" style="font-size: 10px; padding: 4px 8px; opacity: 0.6;">Read Only</span>'}
+                      <div class="f-session-score" dir="auto">
+                         ${[1, 2, 3, 4, 5].map(v => `<span class="star-large" style="color: ${v <= (s.score || 0) ? '#fbbf24' : 'rgba(255,255,255,0.1)'};">★</span>`).join('')}
+                         <span style="font-size: 14px; margin-left: 6px; font-weight:900; opacity: 0.8;">${s.score || '0.0'}</span>
+                      </div>
                    </div>
 
-                   <div class="f-session-score" dir="auto">
-                      ${[1, 2, 3, 4, 5].map(v => `<span class="star-large" style="color: ${v <= (s.score || 0) ? '#fbbf24' : 'rgba(255,255,255,0.1)'};">★</span>`).join('')}
-                      <span style="font-size: 14px; margin-left: 6px; font-weight:900; opacity: 0.8;">${s.score || '0.0'}</span>
-                   </div>
+                   <div class="f-session-details">
+                      <div class="f-session-section">
+                         <div class="f-section-label">${lang === 'ar' ? 'الحالة الحالية' : 'Current Status'}</div>
+                         <div class="f-session-actions" dir="auto">${s.status || '—'}</div>
+                         ${hasLongStatus ? `<button class="show-more-btn" onclick="event.stopPropagation(); toggleCardText(this)">${lang === 'ar' ? 'عرض المزيد' : 'Show More'}</button>` : ''}
+                      </div>
 
-                   <div class="f-session-section">
-                      <div class="f-section-label">${lang === 'ar' ? 'الحالة الحالية' : 'Current Status'}</div>
-                      <div class="f-session-actions" dir="auto">${s.status || '—'}</div>
-                      ${hasLongStatus ? `<button class="show-more-btn" onclick="event.stopPropagation(); toggleCardText(this)">${lang === 'ar' ? 'عرض المزيد' : 'Show More'}</button>` : ''}
-                   </div>
+                      <div class="f-session-section">
+                         <div class="f-section-label">${lang === 'ar' ? 'أبرز الإنجازات' : 'Key Achievements'}</div>
+                         <div class="f-session-actions" dir="auto">${s.achievements || '—'}</div>
+                         ${hasLongAchievements ? `<button class="show-more-btn" onclick="event.stopPropagation(); toggleCardText(this)">${lang === 'ar' ? 'عرض المزيد' : 'Show More'}</button>` : ''}
+                      </div>
 
-                   <div class="f-session-section">
-                      <div class="f-section-label">${lang === 'ar' ? 'أبرز الإنجازات' : 'Key Achievements'}</div>
-                      <div class="f-session-actions" dir="auto">${s.achievements || '—'}</div>
-                      ${hasLongAchievements ? `<button class="show-more-btn" onclick="event.stopPropagation(); toggleCardText(this)">${lang === 'ar' ? 'عرض المزيد' : 'Show More'}</button>` : ''}
-                   </div>
+                      <div class="f-session-section">
+                         <div class="f-section-label">${lang === 'ar' ? 'خطوات العمل' : 'Action Steps'}</div>
+                         <div class="f-session-actions" dir="auto">${s.actions || '—'}</div>
+                         ${hasLongActions ? `<button class="show-more-btn" onclick="event.stopPropagation(); toggleCardText(this)">${lang === 'ar' ? 'عرض المزيد' : 'Show More'}</button>` : ''}
+                      </div>
 
-                   <div class="f-session-section">
-                      <div class="f-section-label">${lang === 'ar' ? 'خطوات العمل' : 'Action Steps'}</div>
-                      <div class="f-session-actions" dir="auto">${s.actions || '—'}</div>
-                      ${hasLongActions ? `<button class="show-more-btn" onclick="event.stopPropagation(); toggleCardText(this)">${lang === 'ar' ? 'عرض المزيد' : 'Show More'}</button>` : ''}
+                      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                         <a href="${s.file || '#'}" target="_blank" class="f-session-file ${s.file ? '' : 'disabled'}" style="margin-top:0; flex:1; margin-right:12px;" dir="auto" onclick="${s.file ? 'event.stopPropagation()' : 'event.preventDefault(); event.stopPropagation()'}">
+                           ${s.file ? (lang === 'ar' ? '📎 عرض الملف المرفق' : '📎 View Uploaded File') : (lang === 'ar' ? '(لا يوجد ملفات)' : '(No Uploaded Files)')}
+                         </a>
+                         ${isOwner ? `
+                           <button class="btn" style="min-height:44px; padding:6px 20px; font-size:14px; border-radius:12px; background: rgba(79, 70, 229, 0.1); border: 1px solid var(--accent); white-space:nowrap;" onclick="event.stopPropagation(); openEditFollowupModal('${item.company.replace(/'/g, "\\'")}', ${s.num}, \`${(s.status || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.achievements || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, \`${(s.actions || '').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, '${s.score}')">
+                             ✏️ ${lang === 'ar' ? 'تعديل' : 'Edit'}
+                           </button>
+                         ` : '<span class="tag" style="font-size: 11px; padding: 6px 12px; opacity: 0.6; background: rgba(0,0,0,0.05); border-radius:8px;">Read Only</span>'}
+                      </div>
                    </div>
-
-                   <a href="${s.file || '#'}" target="_blank" class="f-session-file ${s.file ? '' : 'disabled'}" dir="auto" onclick="${s.file ? 'event.stopPropagation()' : 'event.preventDefault(); event.stopPropagation()'}">
-                     ${s.file ? (lang === 'ar' ? '📎 عرض الملف المرفق' : '📎 View Uploaded File') : (lang === 'ar' ? '(لا يوجد ملفات)' : '(No Uploaded Files)')}
-                   </a>
                 </div>
               `}).join('')}
             </div>
@@ -3160,6 +3207,10 @@
 
         function toggleCompanyCard(header) {
             header.closest('.f-card').classList.toggle('expanded');
+        }
+
+        function toggleSession(sessionEl) {
+            sessionEl.classList.toggle('expanded');
         }
 
         function toggleCardText(btn) {
