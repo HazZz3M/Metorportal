@@ -2432,7 +2432,7 @@
          * 1. Deploy your Apps Script as a Web App (Anyone with access)
          * 2. Paste the executable URL (/exec) below
          */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbziXZJzmGiw-hwC6-lT7XQLKY4mRAcoJwRuACVWm62zdOAQv-mwI3ztOMx9J5lYiTlt/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwk6jHP4byq491GCIqAe8Uv8M_8bCrPNCKJ5bkmtwZrFxzDKnm0Upwfnbp07q6K5AMR/exec";
 
         // google.script.run Bridge (Shim) for environments outside of GAS (like GitHub Pages)
         if (typeof google === 'undefined' || !google.script || !google.script.run) {
@@ -2896,21 +2896,28 @@
                 if (isInitial) toast('Signed in');
             }).withFailureHandler(function (err) {
                 hideLoading();
-                toast('Load failed: ' + err.message);
+                toast('Load failed: ' + (err.message || err));
             }).getInitialAppLoad(currentMentor, selValue, currentRound);
         }
 
-        function loadFollowUpLazy() {
-            if (followUpData.length > 0) return; // Already loaded
+        function loadFollowUpLazy(callback) {
+            if (followUpData.length > 0) {
+                if (callback) callback();
+                return;
+            }
 
             const container = $('followupList');
-            container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--muted)">Loading feedbacks...</div>';
+            if (container) container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--muted)">Loading feedbacks...</div>';
 
             google.script.run.withSuccessHandler(function (data) {
                 followUpData = data;
                 renderFollowUp();
+                if (callback) callback();
             }).withFailureHandler(function (err) {
-                container.innerHTML = '<div class="f-empty">Error loading feedbacks.</div>';
+                const msg = err.message || err || 'Check connection';
+                if (container) container.innerHTML = `<div class="f-empty">Error loading feedbacks: ${msg}</div>`;
+                toast('Error loading feedbacks: ' + msg);
+                if (callback) callback();
             }).getFollowUpData(currentMentor, currentRound);
         }
 
