@@ -2277,11 +2277,10 @@
                         </div>      </div>
                             </div>
                             <div class="form-group">
-                                <label for="mentorName" data-i18n="label_mentor">Select Mentor Name</label>
-                                <div class="select-wrapper">
-                                    <select id="mentorName" required>
-                                        <option value="" data-i18n="select_round_first">Select round first</option>
-                                    </select>
+                                <label data-i18n="label_mentor">Select Mentor Name</label>
+                                <input type="hidden" id="mentorName">
+                                <div id="mentorCards" class="round-cards-container">
+                                    <div style="color:var(--muted); font-size:13px; grid-column: 1/-1" data-i18n="select_round_first">Select round first</div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -3703,17 +3702,31 @@
             // Set hidden value
             $('roundId').value = id;
             
+            // Clear mentor selection
+            $('mentorName').value = '';
+            
             // Trigger mentor loading
-            const mSel = $('mentorName');
-            mSel.innerHTML = '<option value="">Loading mentors...</option>';
+            const container = $('mentorCards');
+            container.innerHTML = '<div style="color:var(--muted); font-size:13px; grid-column: 1/-1">Loading mentors...</div>';
+            
             google.script.run.withSuccessHandler(function (list) {
-                mSel.innerHTML = '<option value="">Select Mentor Name</option>';
-                list.forEach(name => {
-                    const opt = document.createElement('option');
-                    opt.value = opt.textContent = name;
-                    mSel.appendChild(opt);
-                });
+                if (list.length === 0) {
+                    container.innerHTML = '<div style="color:var(--muted); font-size:13px; grid-column: 1/-1">No mentors found in this round</div>';
+                    return;
+                }
+                container.innerHTML = list.map(name => `
+                    <div class="round-card" onclick="selectMentorCard('${name.replace(/'/g, "\\'")}', this)">
+                        ${name}
+                    </div>
+                `).join('');
             }).getMentors(id);
+        }
+
+        function selectMentorCard(name, el) {
+            const parent = el.parentElement;
+            parent.querySelectorAll('.round-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            $('mentorName').value = name;
         }
 
         function renderCompanySearchResults(search) {
