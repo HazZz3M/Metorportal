@@ -1822,6 +1822,29 @@
             background: var(--accent);
             color: #000
         }
+
+        @keyframes errorGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(239, 68, 68, 0.2);
+                border-color: var(--danger);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+                border-color: #f87171;
+            }
+
+            100% {
+                box-shadow: 0 0 5px rgba(239, 68, 68, 0.2);
+                border-color: var(--danger);
+            }
+        }
+
+        .error-glow {
+            animation: errorGlow 1.5s ease-in-out infinite;
+            border-width: 2px !important;
+            scroll-margin-top: 100px;
+        }
     </style>
 </head>
 
@@ -2200,23 +2223,28 @@
                 <form id="editFollowupForm">
                     <input type="hidden" id="efCompany">
                     <input type="hidden" id="efSessionNum">
-                    
+
                     <div class="form-group">
                         <label for="efStatus" data-i18n="label_status">Current Status</label>
-                        <div class="q-desc" data-i18n="desc_status">يرجى توضيح المرحلة التي وصلت إليها الشركة حاليًا وأي جوانب تحتاج إلى دعم أو تطوير</div>
+                        <div class="q-desc" data-i18n="desc_status">يرجى توضيح المرحلة التي وصلت إليها الشركة حاليًا وأي
+                            جوانب تحتاج إلى دعم أو تطوير</div>
                         <textarea id="efStatus" dir="auto" maxlength="1000" oninput="updateCharCount(this)"></textarea>
                         <div class="char-counter"><span class="count">0</span> / 1000</div>
                     </div>
 
                     <div class="form-group">
-                        <label for="efAchievements" data-i18n="label_achievements">Achievements Since The Last Session</label>
-                        <div class="q-desc" data-i18n="desc_achievements">يرجى توضيح الخطوات أو المهام التي تم الاتفاق عليها في الجلسة السابقة...</div>
-                        <textarea id="efAchievements" dir="auto" maxlength="1000" oninput="updateCharCount(this)"></textarea>
+                        <label for="efAchievements" data-i18n="label_achievements">Achievements Since The Last
+                            Session</label>
+                        <div class="q-desc" data-i18n="desc_achievements">يرجى توضيح الخطوات أو المهام التي تم الاتفاق
+                            عليها في الجلسة السابقة...</div>
+                        <textarea id="efAchievements" dir="auto" maxlength="1000"
+                            oninput="updateCharCount(this)"></textarea>
                         <div class="char-counter"><span class="count">0</span> / 1000</div>
                     </div>
 
                     <div class="form-group">
-                        <label for="efActions" data-i18n="label_action_steps">Action Steps To Be Completed Before The Next Session</label>
+                        <label for="efActions" data-i18n="label_action_steps">Action Steps To Be Completed Before The
+                            Next Session</label>
                         <textarea id="efActions" dir="auto" maxlength="1000" oninput="updateCharCount(this)"></textarea>
                         <div class="char-counter"><span class="count">0</span> / 1000</div>
                     </div>
@@ -2236,8 +2264,10 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn secondary" onclick="closeEditFollowupModal()" data-i18n="btn_cancel">Cancel</button>
-                <button type="submit" form="editFollowupForm" class="btn" id="efSubmitBtn" data-i18n="btn_submit">Save Changes</button>
+                <button type="button" class="btn secondary" onclick="closeEditFollowupModal()"
+                    data-i18n="btn_cancel">Cancel</button>
+                <button type="submit" form="editFollowupForm" class="btn" id="efSubmitBtn" data-i18n="btn_submit">Save
+                    Changes</button>
             </div>
         </div>
     </div>
@@ -2402,17 +2432,17 @@
          * 1. Deploy your Apps Script as a Web App (Anyone with access)
          * 2. Paste the executable URL (/exec) below
          */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwk6jHP4byq491GCIqAe8Uv8M_8bCrPNCKJ5bkmtwZrFxzDKnm0Upwfnbp07q6K5AMR/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbziXZJzmGiw-hwC6-lT7XQLKY4mRAcoJwRuACVWm62zdOAQv-mwI3ztOMx9J5lYiTlt/exec";
 
         // google.script.run Bridge (Shim) for environments outside of GAS (like GitHub Pages)
         if (typeof google === 'undefined' || !google.script || !google.script.run) {
             window.google = {
                 script: {
-                    run: (function() {
+                    run: (function () {
                         var successHandler = null;
                         var failureHandler = null;
 
-                        var callGas = function(funcName, args, sH, fH) {
+                        var callGas = function (funcName, args, sH, fH) {
                             if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL === "YOUR_WEB_APP_URL_HERE") {
                                 console.error("GAS_WEB_APP_URL is not configured.");
                                 if (fH) fH(new Error("Backend URL not configured."));
@@ -2423,20 +2453,20 @@
                                 mode: 'cors', // Crucial for across-domain requests
                                 body: JSON.stringify({ functionName: funcName, args: args })
                             })
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.error) { if (fH) fH(new Error(data.error)); }
-                                else { if (sH) sH(data); }
-                            })
-                            .catch(err => { if (fH) fH(err); });
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.error) { if (fH) fH(new Error(data.error)); }
+                                    else { if (sH) sH(data); }
+                                })
+                                .catch(err => { if (fH) fH(err); });
                         };
 
-                        var createProxy = function(s, f) {
+                        var createProxy = function (s, f) {
                             return new Proxy({}, {
-                                get: function(target, prop) {
-                                    if (prop === 'withSuccessHandler') return function(h) { return createProxy(h, f); };
-                                    if (prop === 'withFailureHandler') return function(h) { return createProxy(s, h); };
-                                    return function() {
+                                get: function (target, prop) {
+                                    if (prop === 'withSuccessHandler') return function (h) { return createProxy(h, f); };
+                                    if (prop === 'withFailureHandler') return function (h) { return createProxy(s, h); };
+                                    return function () {
                                         var args = Array.prototype.slice.call(arguments);
                                         callGas(prop, args, s, f);
                                     };
@@ -2454,8 +2484,11 @@
         let followUpData = [];
         let followupFilterAssigned = true;
         let allCompanies = []; // Global store for form
+        let isFormDirty = false;
 
         const $ = (id) => document.getElementById(id);
+        const markClean = () => { isFormDirty = false; };
+        const markDirty = () => { isFormDirty = true; };
         const showError = (el, msg) => { el.textContent = msg || 'Error'; el.style.display = 'block'; }
         const hideError = (el) => { el.style.display = 'none'; }
         const showLoading = (msg) => { const l = $('loading'); $('loadingText').textContent = msg || 'Loading'; l.style.display = 'flex' }
@@ -2490,7 +2523,10 @@
                 label_tests: "Tests", desc_tests: "Identify tests to confirm hypotheses.",
                 label_actual_cause: "Actual Cause", desc_actual_cause: "The final root cause identified.",
                 label_solution_plan: "Solution Plan", desc_solution_plan: "Detailed solutions and implementation plan.",
-                btn_save_diagnose: "Save Diagnose", modal_session_title: "Session Details"
+                btn_save_diagnose: "Save Diagnose", modal_session_title: "Session Details",
+                submitted_edit: "(Submitted / Click to Edit)",
+                unsaved_changes: "You have unsaved changes! Please click the submit or save button.",
+                btn_save_changes: "Save Changes"
             },
             ar: {
                 brand: "بوابة الموجه", tab_info: "معلومات", tab_feedbacks: "التقرير", signin_title: "تسجيل الدخول",
@@ -2525,7 +2561,10 @@
                 placeholder_history: "أدخل التاريخ...", placeholder_complaint: "أدخل الشكوى...",
                 placeholder_symptoms: "أدخل الأعراض...", placeholder_signs: "أدخل العلامات...",
                 placeholder_expert_notes: "أدخل الملاحظات...", placeholder_possible_causes: "أدخل الأسباب...",
-                placeholder_tests: "أدخل الاختبارات...", placeholder_actual_cause: "أدخل السبب..."
+                placeholder_tests: "أدخل الاختبارات...", placeholder_actual_cause: "أدخل السبب...",
+                submitted_edit: "(تم التسليم \ اضغط للتعديل)",
+                unsaved_changes: "هناك تغييرات غير محفوظة! يرجى الضغط على زر الإرسال أو الحفظ.",
+                btn_save_changes: "حفظ التعديلات"
             }
         };
 
@@ -2585,13 +2624,56 @@
             // Reset counters
             document.querySelectorAll('.char-counter .count').forEach(c => c.textContent = '0');
 
+            $('fSubmitBtn').textContent = i18n[document.documentElement.getAttribute('lang') || 'ar'].btn_submit;
+
             $('feedbackModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
+            markClean(); // Reset dirty flag on open
+            if (followUpData.length === 0) {
+                loadFollowUpLazy(() => refreshFDayOptions(presetCompany || ''));
+            } else {
+                refreshFDayOptions(presetCompany || '');
+            }
             loadCompaniesForForm();
         };
+
+        const refreshFDayOptions = (companyName) => {
+            const lang = document.documentElement.getAttribute('lang') || 'ar';
+            const submittedText = i18n[lang].submitted_edit;
+            const fDay = $('fDay');
+            if (!fDay) return;
+            const companyData = followUpData.find(c => c.company.toLowerCase() === companyName.toLowerCase());
+
+            // Default labels
+            const options = fDay.querySelectorAll('option');
+            options.forEach((opt, idx) => {
+                if (idx === 0) return; // Skip "Select Day"
+                const dayValue = opt.value; // Day_01, Day_02...
+                const dayNum = parseInt(dayValue.split('_')[1]);
+                let label = dayValue;
+
+                if (companyData) {
+                    const session = companyData.sessions.find(s => s.num === dayNum);
+                    const isSubmitted = session && (
+                        (session.actions && session.actions.toString().trim() !== '') ||
+                        (session.score && session.score.toString().trim() !== '') ||
+                        (session.status && session.status.toString().trim() !== '')
+                    );
+                    if (isSubmitted) {
+                        label += ' ' + submittedText;
+                    }
+                }
+                opt.textContent = label;
+            });
+        };
         const closeFeedbackModal = () => {
+            if (isFormDirty) {
+                const lang = document.documentElement.getAttribute('lang') || 'ar';
+                if (!confirm(i18n[lang].unsaved_changes)) return;
+            }
             $('feedbackModal').style.display = 'none';
             document.body.style.overflow = 'auto';
+            markClean();
         };
 
         const openDiagnoseModal = () => {
@@ -2685,7 +2767,7 @@
             $('efStatus').value = status || '';
             $('efAchievements').value = achievements || '';
             $('efActions').value = actions || '';
-            
+
             const val = parseFloat(score || 0);
             $('efScore').value = val.toFixed(1);
             $('efScoreValue').textContent = val.toFixed(1);
@@ -2904,6 +2986,7 @@
         function selectCompanyForForm(name) {
             $('fCompanyName').value = name;
             $('companyResults').style.display = 'none';
+            refreshFDayOptions(name);
         }
 
         function renderFollowUp() {
@@ -2923,12 +3006,12 @@
 
             container.innerHTML = filtered.map(item => {
                 // BUG FIX: Show sessions that have EITHER actions, score, or file
-                const activeSessions = item.sessions.filter(s => 
-                    (s.actions && s.actions.toString().trim() !== '') || 
+                const activeSessions = item.sessions.filter(s =>
+                    (s.actions && s.actions.toString().trim() !== '') ||
                     (s.score && s.score.toString().trim() !== '') ||
                     (s.file && s.file.toString().trim() !== '')
                 );
-                
+
                 if (activeSessions.length === 0) return '';
 
                 return `
@@ -3144,6 +3227,7 @@
                 google.script.run.withSuccessHandler(function () {
                     hideLoading();
                     toast('Diagnose saved successfully!');
+                    markClean();
                     closeDiagnoseModal();
                     btn.disabled = false;
                 }).withFailureHandler(function (err) {
@@ -3164,6 +3248,7 @@
                         if (parseInt(x.getAttribute('data-value')) <= val) x.classList.add('active');
                         else x.classList.remove('active');
                     });
+                    markDirty();
                 });
             });
 
@@ -3196,9 +3281,20 @@
                     return;
                 }
 
+                if (!formData.dayOfSession) {
+                    hideLoading();
+                    btn.disabled = false;
+                    const dayEl = $('fDay').closest('.select-wrapper');
+                    dayEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    dayEl.classList.add('error-glow');
+                    toast((document.documentElement.getAttribute('lang') || 'ar') === 'ar' ? 'يرجى اختيار يوم الجلسة' : 'Please select the session day');
+                    return;
+                }
+
                 google.script.run.withSuccessHandler(function () {
                     hideLoading();
                     toast('Feedback submitted successfully!');
+                    markClean();
                     closeFeedbackModal();
                     loadAllData(false); // Refresh list
                     btn.disabled = false;
@@ -3245,6 +3341,7 @@
                 google.script.run.withSuccessHandler(function () {
                     hideLoading();
                     toast('Changes saved successfully!');
+                    markClean();
                     closeEditFollowupModal();
                     followUpData = []; // Force reload
                     loadFollowUpLazy();
@@ -3269,6 +3366,61 @@
                     });
                 });
             });
+
+            $('fDay').addEventListener('change', function () {
+                const lang = document.documentElement.getAttribute('lang') || 'ar';
+                if (this.value) {
+                    this.closest('.select-wrapper').classList.remove('error-glow');
+                    
+                    const companyName = $('fCompanyName').value;
+                    const dayNum = parseInt(this.value.split('_')[1]);
+                    const companyData = followUpData.find(c => c.company.toLowerCase() === companyName.toLowerCase());
+                    const session = companyData ? companyData.sessions.find(s => s.num === dayNum) : null;
+                    
+                    const isSubmitted = session && (
+                        (session.actions && session.actions.toString().trim() !== '') ||
+                        (session.score && session.score.toString().trim() !== '') ||
+                        (session.status && session.status.toString().trim() !== '')
+                    );
+
+                    if (isSubmitted) {
+                        $('fStatus').value = session.status || '';
+                        $('fAchievements').value = session.achievements || '';
+                        $('fActionSteps').value = session.actions || '';
+                        
+                        const score = parseFloat(session.score || 0);
+                        $('fScore').value = score.toFixed(1);
+                        $('fScoreValue').textContent = score.toFixed(1);
+                        document.querySelectorAll('.star').forEach(s => {
+                            if (parseInt(s.getAttribute('data-value')) <= score) s.classList.add('active');
+                            else s.classList.remove('active');
+                        });
+                        
+                        $('fSubmitBtn').textContent = i18n[lang].btn_save_changes;
+                    } else {
+                        // Reset if switching to empty day
+                        ['fStatus', 'fAchievements', 'fActionSteps'].forEach(id => $(id).value = '');
+                        $('fScore').value = '0.0';
+                        $('fScoreValue').textContent = '0.0';
+                        document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                        $('fSubmitBtn').textContent = i18n[lang].btn_submit;
+                    }
+                    
+                    // Update counters
+                    ['fStatus', 'fAchievements', 'fActionSteps'].forEach(id => updateCharCount($(id)));
+                }
+            });
+
+            // Attach Dirty Checks
+            const attachDirtyCheck = (formId) => {
+                const form = $(formId);
+                if (!form) return;
+                form.querySelectorAll('input, textarea, select').forEach(el => {
+                    el.addEventListener('input', markDirty);
+                    el.addEventListener('change', markDirty);
+                });
+            };
+            ['feedbackForm', 'diagnoseForm', 'editFollowupForm'].forEach(attachDirtyCheck);
         });
     </script>
 </body>
