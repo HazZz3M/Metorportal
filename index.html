@@ -618,6 +618,122 @@
             }
         }
 
+        /* Admin UI Extensions */
+        .admin-btn-link {
+            display: block;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .admin-btn-link:hover {
+            color: var(--accent);
+        }
+
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .admin-stat-card {
+            background: var(--card-2);
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .admin-stat-card .label {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .admin-stat-card .value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .admin-table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--card);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        .admin-table th {
+            background: var(--card-2);
+            padding: 16px;
+            font-weight: 800;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-table tr:hover {
+            background: rgba(67, 56, 202, 0.02);
+        }
+
+        .admin-action-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            background: var(--card-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .admin-action-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .settings-lock {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px dashed var(--danger);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .settings-lock input {
+            max-width: 250px;
+            margin: 12px auto;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+
         .container {
             flex: 1;
             display: flex;
@@ -2017,9 +2133,10 @@
                             <div class="form-group">
                                 <label for="pin" data-i18n="label_pin">PIN Code (If applicable)</label>
                                 <input type="password" id="pin" placeholder="••••" dir="ltr">
+                                <button class="btn" id="loginBtn" style="margin-top: 20px;" data-i18n="btn_signin">Sign
+                                    In</button>
+                                <div class="admin-btn-link" onclick="openAdminLoginModal()">تسجيل دخول الإدارة \ المطور</div>
                             </div>
-                            <button class="btn" id="loginBtn" style="margin-top: 20px;" data-i18n="btn_signin">Sign
-                                In</button>
                         </div>
                     </div>
                 </div>
@@ -2180,6 +2297,80 @@
                         </div>
                         <div id="followupList" style="display:grid; gap:20px;">
                             <!-- Data injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Panel -->
+                <div class="panel tab-content" id="adminPanel" style="display:none;">
+                    <div class="header">
+                        <h1>لوحة الإدارة \ المطور</h1>
+                        <div class="actions">
+                            <button class="btn secondary" onclick="loadAdminStats()">تحديث البيانات</button>
+                            <button class="btn ghost" onclick="handleLogout()">Logout</button>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="nav-tabs" style="display: flex; margin-bottom: 24px;">
+                            <div class="tab active" onclick="switchAdminTab('stats', this)">الإحصائيات</div>
+                            <div class="tab" onclick="switchAdminTab('settings', this)">إعدادات الربط</div>
+                        </div>
+
+                        <div id="adminStatsView">
+                            <div class="admin-stats-grid">
+                                <div class="admin-stat-card">
+                                    <div class="label">إجمالي الموجهين</div>
+                                    <div class="value" id="statTotalMentors">0</div>
+                                </div>
+                                <div class="admin-stat-card">
+                                    <div class="label">إجمالي التقارير</div>
+                                    <div class="value" id="statTotalReports">0</div>
+                                </div>
+                                <div class="admin-stat-card">
+                                    <div class="label">إجمالي التشخيصات</div>
+                                    <div class="value" id="statTotalDiagnoses">0</div>
+                                </div>
+                            </div>
+
+                            <div class="admin-table-container">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>الموجه</th>
+                                            <th>الدورات</th>
+                                            <th style="text-align:center">التقارير</th>
+                                            <th style="text-align:center">التشخيصات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminMentorsTable">
+                                        <!-- Data populated via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="adminSettingsView" style="display:none">
+                            <div class="settings-lock" id="settingsLock">
+                                <div style="font-weight: 800; color: var(--danger)">منطقة محمية</div>
+                                <div style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">أدخل كلمة مرور المطور للتعديل</div>
+                                <input type="password" id="devPass" class="btn secondary" placeholder="••••" oninput="checkDevPass(this.value)">
+                            </div>
+
+                            <div id="settingsContent" style="opacity: 0.3; pointer-events: none">
+                                <div class="form-group">
+                                    <label>معرف جدول التقارير (Reports ID)</label>
+                                    <input type="text" id="adminFormId" style="font-family: monospace; font-size: 14px">
+                                </div>
+                                <div class="form-group">
+                                    <label>معرف جدول التشخيص (Diagnose ID)</label>
+                                    <input type="text" id="adminDiagId" style="font-family: monospace; font-size: 14px">
+                                </div>
+                                <div style="margin-top: 24px; display: flex; gap: 12px">
+                                    <button class="btn" onclick="saveAdminSettings()" id="saveSettingsBtn">حفظ التغييرات</button>
+                                    <a href="#" id="linkReports" target="_blank" class="admin-action-btn">فتح جدول التقارير</a>
+                                    <a href="#" id="linkDiag" target="_blank" class="admin-action-btn">فتح جدول التشخيص</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2521,8 +2712,8 @@
                         <label for="dSolutionPlan" data-i18n="label_solution_plan">خطة الحل</label>
                         <div class="q-desc" data-i18n="desc_solution_plan">ﺗﻘﺪﻳﻢ ﺣﻠﻮل ﺗﻔﺼﻴﻠﻴﺔ وﺧﻄﺔ ﺗﻨﻔﻴﺬ واﺿﺤﺔ ﻟﻤﻌﺎﻟﺠﺔ
                             اﻟﻤﺸﻜﻠﺔ اﻟﺤﺎﻟﻴﺔ، ﺑﺤﻴﺚ ﺗﻬﺪف ﻫﺬه
-                            اﻟﺤﻠﻮل إﻟﻰ ﺗﻘﻠﻴﻞ اﻷﻋﺮاض، وﻣﻌﺎﻟجة أو اﻟﺤﺪ ﻣﻦ اﻟﺴﺒﺐ اﻟﺠﺬري ﻟﻠﻤﺸﻜﻠﺔ، واﺳﺘﻌﺎدة ﻛﻔﺎءة اﻷداء ﺑﺸﻜﻞ
-                            ﻛﺎﻣﻞ أو ﺟﺰﺋﻲ. ﻳﺠﺐ ﻋﺮض ﺟﻤﻴﻊ اﻟﺨﻴﺎرات اﻟﻤﺘﺎﺣﺔ ﻋﻠﻰ اﻟﻤﺆﺳﺲ ﺑﺸﻜﻞ ﺷﺎﻣﻞ وﺷﻔﺎف، ﻣﻊ ﺗﻮﺿﻴﺢ اﻟﻨﺘﺎﺋﺞ
+                            اﻟﺤﻠﻮل إﻟﻰ ﺗﻘﻠﻴﻞ اﻷﻋﺮاض، وﻣﻌﺎﻟجة أو اﻟﺤﺪ ﻣﻦ اﻟﺴﺒﺐ اﻟﺠﺬري ﻠﻠﻤﺸﻜﻠﺔ، واﺳﺘﻌﺎدة ﻛﻔﺎءة اﻷداء ﺑﺸﻜﻞ
+                            ﻛﺎﻣﻞ أو ﺟﺰئي. ﻳﺠﺐ ﻋﺮض ﺟﻤﻴﻊ اﻟﺨﻴﺎرات اﻟﻤﺘﺎﺣﺔ ﻋﻠﻰ اﻟﻤﺆﺳﺲ ﺑﺸﻜﻞ ﺷﺎﻣﻞ وﺷﻔﺎف، ﻣﻊ ﺗﻮﺿﻴﺢ اﻟﻨﺘﺎﺋﺞ
                             اﻟﻤﺘﻮﻗﻌﺔ ﻟﻜﻞ ﺧﻴﺎر، واﻟﺘﻜﺎﻟﻴﻒ اﻟﻤﺮﺗﺒﻄﺔ ﺑﻪ، واﻟﺘﺒﻌﺎت أو اﻟﻤﺨﺎﻃﺮ اﻟﻤﺤﺘﻤﻠﺔ. ﻛﻤﺎ ﻳﻨﺒغي ﺗﻮﺿﻴﺢ
                             اﻟﻌﻮاﻗﺐ اﻟﻤﺘﺮﺗﺒﺔ ﻋﻠﻰ ﻋﺪم اﺗﺨﺎذ أي إﺟﺮاء. ﻓﻲ اﻟﻨﻬﺎﻳﺔ، ﻳُﻤﻨﺢ اﻟﻤﺆﺳﺲ اﻟﺤﺮﻳﺔ اﻟﻜﺎﻣﻠﺔ ﻻﺧﺘﻴﺎر
                             اﻟﻤﺴﺎر اﻟﺬي ﻳﺮاه ﻣﻨﺎﺳﺒًﺎ، ﺑﻌﺪ اﻻﻃﻼع اﻟﻜﺎﻣﻞ ﻋﻠﻰ ﻛﺎﻓﺔ اﻟﺒﺪاﺋﻞ وﻓﻬﻢ ﺗﺄﺛﻴﺮ ﻛﻞ ﻗﺮار ﺑﺸﻜﻞ دﻗﻴﻖ
@@ -2550,13 +2741,34 @@
         </div>
     </div>
 
+    <!-- Admin Login Modal -->
+    <div class="modal" id="adminLoginModal">
+        <div class="modal-content" style="max-width: 400px">
+            <div class="modal-header">
+                <div class="modal-title">دخول الإدارة \ المطور</div>
+                <button class="modal-close" onclick="$('adminLoginModal').style.display='none'">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <input type="text" id="adminUser" placeholder="athar">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="adminPass" placeholder="athar2026">
+                </div>
+                <button class="btn" style="width: 100%; margin-top: 16px" onclick="handleAdminLogin()">تسجيل الدخول</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         /**
          * CONFIGURATION FOR GITHUB DEPLOYMENT
          * 1. Deploy your Apps Script as a Web App (Anyone with access)
          * 2. Paste the executable URL (/exec) below
          */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz9mkfAuj1Pqo1d1WvikaN3oEVMGiTgGLjNZG0ypuM-GvuK9HtaOJM46hb6z-Vt09xr/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwFzYkGJFWFtpJ208qEtOe2AgVnHJgWw_vreZ3WNRVAFbWwgiKtcR_6EQnWUPWneY94/exec";
 
         // google.script.run Bridge (Shim) for environments outside of GAS (like GitHub Pages)
         if (typeof google === 'undefined' || !google.script || !google.script.run) {
@@ -2866,8 +3078,117 @@
 
         const closeDiagnoseModal = () => {
             $('diagnoseModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        };
+             document.body.style.overflow = 'auto';
+         };
+
+         // === ADMIN LOGIC ===
+         const openAdminLoginModal = () => {
+             $('adminLoginModal').style.display = 'flex';
+             $('adminUser').value = '';
+             $('adminPass').value = '';
+         };
+
+         const handleAdminLogin = () => {
+             const user = $('adminUser').value;
+             const pass = $('adminPass').value;
+             showLoading('Authenticating...');
+             google.script.run.withSuccessHandler(function (res) {
+                 hideLoading();
+                 if (res.ok) {
+                     $('adminLoginModal').style.display = 'none';
+                     $('loginPanel').style.display = 'none';
+                     $('adminPanel').style.display = 'block';
+                     loadAdminStats();
+                 }
+             }).withFailureHandler(function (err) {
+                 hideLoading();
+                 toast(err.message);
+             }).validateAdminLogin(user, pass);
+         };
+
+         const switchAdminTab = (tab, el) => {
+             const tabs = el.parentElement.querySelectorAll('.tab');
+             tabs.forEach(t => t.classList.remove('active'));
+             el.classList.add('active');
+
+             if (tab === 'stats') {
+                 $('adminStatsView').style.display = 'block';
+                 $('adminSettingsView').style.display = 'none';
+             } else {
+                 $('adminStatsView').style.display = 'none';
+                 $('adminSettingsView').style.display = 'block';
+             }
+         };
+
+         const loadAdminStats = () => {
+             showLoading('جاري تحميل الإحصائيات...');
+             google.script.run.withSuccessHandler(function (data) {
+                 hideLoading();
+                 $('statTotalMentors').textContent = data.totalMentors;
+                 
+                 let totalReports = 0;
+                 let totalDiag = 0;
+                 const list = $('adminMentorsTable');
+                 list.innerHTML = '';
+
+                 const sortedMentors = Object.keys(data.mentors).sort();
+                 sortedMentors.forEach(m => {
+                     const s = data.mentors[m];
+                     totalReports += s.reports;
+                     totalDiag += s.diagnoses;
+
+                     const tr = document.createElement('tr');
+                     tr.innerHTML = `
+                         <td><div style="font-weight:700">${m}</div></td>
+                         <td><div style="font-size:11px; color:var(--muted)">${s.rounds.join(', ')}</div></td>
+                         <td style="text-align:center">
+                            <span class="badge ${s.reports > 0 ? 'success' : ''}">${s.reports}</span>
+                         </td>
+                         <td style="text-align:center">
+                            <span class="badge ${s.diagnoses > 0 ? 'accent' : ''}">${s.diagnoses}</span>
+                         </td>
+                     `;
+                     list.appendChild(tr);
+                 });
+
+                 $('statTotalReports').textContent = totalReports;
+                 $('statTotalDiagnoses').textContent = totalDiag;
+
+                 // populate settings inputs
+                 $('adminFormId').value = data.settings.formId;
+                 $('adminDiagId').value = data.settings.diagnoseId;
+                 $('linkReports').href = data.reportUrl;
+                 $('linkDiag').href = data.diagnoseUrl;
+
+             }).withFailureHandler(function (err) {
+                 hideLoading();
+                 toast(err.message);
+             }).getAdminStats();
+         };
+
+         const checkDevPass = (val) => {
+             if (val === 'hzzz3m') {
+                 $('settingsLock').style.display = 'none';
+                 $('settingsContent').style.opacity = '1';
+                 $('settingsContent').style.pointerEvents = 'all';
+             }
+         };
+
+         const saveAdminSettings = () => {
+             const formId = $('adminFormId').value;
+             const diagId = $('adminDiagId').value;
+             const pass = $('devPass').value;
+
+             showLoading('جاري الحفظ...');
+             google.script.run.withSuccessHandler(function () {
+                 hideLoading();
+                 toast('تم حفظ الإعدادات بنجاح');
+                 loadAdminStats(); // Refresh local variables
+             }).withFailureHandler(function (err) {
+                 hideLoading();
+                 toast(err.message);
+             }).updateSettings(formId, diagId, pass);
+         };
 
         const calculateAge = (dateStr) => {
             const start = new Date(dateStr);
@@ -3298,6 +3619,7 @@
             $('pin').value = '';
             $('appPanel').style.display = 'none';
             $('followupPanel').style.display = 'none';
+            $('adminPanel').style.display = 'none';
             $('loginPanel').style.display = 'block';
             $('mainTabs').style.display = 'none';
             $('mobileNav').style.display = 'none';
