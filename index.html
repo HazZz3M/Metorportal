@@ -734,6 +734,80 @@
             letter-spacing: 4px;
         }
 
+        /* Expandable Table Row Styles */
+        .admin-table tr.mentor-row {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .admin-table tr.mentor-row:hover {
+            background: rgba(67, 56, 202, 0.05);
+        }
+
+        .admin-table tr.mentor-row td:first-child {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chevron-icon {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s;
+            color: var(--muted);
+        }
+
+        .mentor-row.expanded .chevron-icon {
+            transform: rotate(90deg);
+        }
+
+        .details-row {
+            display: none;
+            background: rgba(243, 244, 246, 0.5);
+        }
+
+        .details-row.show {
+            display: table-row;
+        }
+
+        .details-container {
+            padding: 0 16px 16px 16px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .sub-table {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .sub-table th {
+            text-align: right;
+            padding: 10px 16px;
+            background: var(--card-2);
+            color: var(--muted);
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sub-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sub-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .container {
             flex: 1;
             display: flex;
@@ -2776,7 +2850,7 @@
          * 1. Deploy your Apps Script as a Web App (Anyone with access)
          * 2. Paste the executable URL (/exec) below
          */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwFzYkGJFWFtpJ208qEtOe2AgVnHJgWw_vreZ3WNRVAFbWwgiKtcR_6EQnWUPWneY94/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz-Acdm4X7v1RdJbTKj3Ph9Vsm8kDXNaVP7dVh-6tGSglD3eyBdc94moYt5rmNfRQXE/exec";
 
         // google.script.run Bridge (Shim) for environments outside of GAS (like GitHub Pages)
         if (typeof google === 'undefined' || !google.script || !google.script.run) {
@@ -3140,23 +3214,73 @@
                 list.innerHTML = '';
 
                 const sortedMentors = Object.keys(data.mentors).sort();
-                sortedMentors.forEach(m => {
+                sortedMentors.forEach((m, idx) => {
                     const s = data.mentors[m];
                     totalReports += s.reports;
                     totalDiag += s.diagnoses;
 
+                    // Parent Row (Mentor)
                     const tr = document.createElement('tr');
+                    tr.className = 'mentor-row';
+                    tr.onclick = () => toggleMentorDetails(idx);
                     tr.innerHTML = `
-                         <td><div style="font-weight:700">${m}</div></td>
-                         <td><div style="font-size:11px; color:var(--muted)">${s.rounds.join(', ')}</div></td>
-                         <td style="text-align:center">
-                            <span class="badge ${s.reports > 0 ? 'success' : ''}">${s.reports}</span>
-                         </td>
-                         <td style="text-align:center">
-                            <span class="badge ${s.diagnoses > 0 ? 'accent' : ''}">${s.diagnoses}</span>
-                         </td>
-                     `;
+                        <td>
+                            <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <div style="font-weight:700">${m}</div>
+                        </td>
+                        <td><div style="font-size:11px; color:var(--muted)">${s.rounds.join(', ')}</div></td>
+                        <td style="text-align:center">
+                           <span class="badge ${s.reports > 0 ? 'success' : ''}">${s.reports}</span>
+                        </td>
+                        <td style="text-align:center">
+                           <span class="badge ${s.diagnoses > 0 ? 'accent' : ''}">${s.diagnoses}</span>
+                        </td>
+                    `;
                     list.appendChild(tr);
+
+                    // Details Row (Companies)
+                    const dr = document.createElement('tr');
+                    dr.className = 'details-row';
+                    dr.id = `details-${idx}`;
+                    
+                    let companyRows = '';
+                    const sortedCompanies = Object.keys(s.companies).sort();
+                    
+                    if (sortedCompanies.length === 0) {
+                        companyRows = '<tr><td colspan="3" style="text-align:center; color:var(--muted)">لا يوجد شركات مسجلة</td></tr>';
+                    } else {
+                        sortedCompanies.forEach(c => {
+                            const cs = s.companies[c];
+                            const lastD = cs.lastDiagnose ? new Date(cs.lastDiagnose).toLocaleDateString('ar-EG') : '—';
+                            companyRows += `
+                                <tr>
+                                    <td style="font-weight:600">${c}</td>
+                                    <td style="text-align:center">${cs.reports}</td>
+                                    <td style="text-align:center; direction:ltr">${lastD}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+
+                    dr.innerHTML = `
+                        <td colspan="4">
+                            <div class="details-container">
+                                <table class="sub-table">
+                                    <thead>
+                                        <tr>
+                                            <th>الشركة</th>
+                                            <th style="text-align:center">عدد التقارير</th>
+                                            <th style="text-align:center">آخر تشخيص</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${companyRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    `;
+                    list.appendChild(dr);
                 });
 
                 $('statTotalReports').textContent = totalReports;
@@ -3172,6 +3296,26 @@
                 hideLoading();
                 toast(err.message);
             }).getAdminStats();
+        };
+
+        const toggleMentorDetails = (idx) => {
+            const row = document.querySelectorAll('.mentor-row')[idx];
+            const details = $(`details-${idx}`);
+            if (!row || !details) return;
+
+            const isExpanded = row.classList.contains('expanded');
+            
+            // Close others if needed (optional)
+            // document.querySelectorAll('.mentor-row').forEach(r => r.classList.remove('expanded'));
+            // document.querySelectorAll('.details-row').forEach(d => d.classList.remove('show'));
+
+            if (isExpanded) {
+                row.classList.remove('expanded');
+                details.classList.remove('show');
+            } else {
+                row.classList.add('expanded');
+                details.classList.add('show');
+            }
         };
 
         const checkDevPass = (val) => {
