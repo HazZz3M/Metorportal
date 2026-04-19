@@ -1481,7 +1481,8 @@
 
         .f-session {
             background: var(--card);
-            padding: 0; /* Changed to handle internal headers */
+            padding: 0;
+            /* Changed to handle internal headers */
             display: flex;
             flex-direction: column;
             cursor: pointer;
@@ -2135,7 +2136,8 @@
                                 <input type="password" id="pin" placeholder="••••" dir="ltr">
                                 <button class="btn" id="loginBtn" style="margin-top: 20px;" data-i18n="btn_signin">Sign
                                     In</button>
-                                <div class="admin-btn-link" onclick="openAdminLoginModal()">تسجيل دخول الإدارة \ المطور</div>
+                                <div class="admin-btn-link" onclick="openAdminLoginModal()">تسجيل دخول الإدارة \ المطور
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2352,8 +2354,10 @@
                         <div id="adminSettingsView" style="display:none">
                             <div class="settings-lock" id="settingsLock">
                                 <div style="font-weight: 800; color: var(--danger)">منطقة محمية</div>
-                                <div style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">أدخل كلمة مرور المطور للتعديل</div>
-                                <input type="password" id="devPass" class="btn secondary" placeholder="••••" oninput="checkDevPass(this.value)">
+                                <div style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">أدخل كلمة مرور
+                                    المطور للتعديل</div>
+                                <input type="password" id="devPass" class="btn secondary" placeholder="••••"
+                                    oninput="checkDevPass(this.value)">
                             </div>
 
                             <div id="settingsContent" style="opacity: 0.3; pointer-events: none">
@@ -2366,9 +2370,12 @@
                                     <input type="text" id="adminDiagId" style="font-family: monospace; font-size: 14px">
                                 </div>
                                 <div style="margin-top: 24px; display: flex; gap: 12px">
-                                    <button class="btn" onclick="saveAdminSettings()" id="saveSettingsBtn">حفظ التغييرات</button>
-                                    <a href="#" id="linkReports" target="_blank" class="admin-action-btn">فتح جدول التقارير</a>
-                                    <a href="#" id="linkDiag" target="_blank" class="admin-action-btn">فتح جدول التشخيص</a>
+                                    <button class="btn" onclick="saveAdminSettings()" id="saveSettingsBtn">حفظ
+                                        التغييرات</button>
+                                    <a href="#" id="linkReports" target="_blank" class="admin-action-btn">فتح جدول
+                                        التقارير</a>
+                                    <a href="#" id="linkDiag" target="_blank" class="admin-action-btn">فتح جدول
+                                        التشخيص</a>
                                 </div>
                             </div>
                         </div>
@@ -2751,13 +2758,14 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>اسم المستخدم</label>
-                    <input type="text" id="adminUser" placeholder="اسم المستخدم">
+                    <input type="text" id="adminUser" placeholder="Username">
                 </div>
                 <div class="form-group">
                     <label>كلمة المرور</label>
-                    <input type="password" id="adminPass" placeholder="كلمة المرور (للادارة \ المطور )">
+                    <input type="password" id="adminPass" placeholder="••••••••">
                 </div>
-                <button class="btn" style="width: 100%; margin-top: 16px" onclick="handleAdminLogin()">تسجيل الدخول</button>
+                <button class="btn" style="width: 100%; margin-top: 16px" onclick="handleAdminLogin()">تسجيل
+                    الدخول</button>
             </div>
         </div>
     </div>
@@ -3078,67 +3086,67 @@
 
         const closeDiagnoseModal = () => {
             $('diagnoseModal').style.display = 'none';
-             document.body.style.overflow = 'auto';
-         };
+            document.body.style.overflow = 'auto';
+        };
 
-         // === ADMIN LOGIC ===
-         const openAdminLoginModal = () => {
-             $('adminLoginModal').style.display = 'flex';
-             $('adminUser').value = '';
-             $('adminPass').value = '';
-         };
+        // === ADMIN LOGIC ===
+        const openAdminLoginModal = () => {
+            $('adminLoginModal').style.display = 'flex';
+            $('adminUser').value = '';
+            $('adminPass').value = '';
+        };
 
-         const handleAdminLogin = () => {
-             const user = $('adminUser').value;
-             const pass = $('adminPass').value;
-             showLoading('Authenticating...');
-             google.script.run.withSuccessHandler(function (res) {
-                 hideLoading();
-                 if (res.ok) {
-                     $('adminLoginModal').style.display = 'none';
-                     $('loginPanel').style.display = 'none';
-                     $('adminPanel').style.display = 'block';
-                     loadAdminStats();
-                 }
-             }).withFailureHandler(function (err) {
-                 hideLoading();
-                 toast(err.message);
-             }).validateAdminLogin(user, pass);
-         };
+        const handleAdminLogin = () => {
+            const user = $('adminUser').value;
+            const pass = $('adminPass').value;
+            showLoading('Authenticating...');
+            google.script.run.withSuccessHandler(function (res) {
+                hideLoading();
+                if (res.ok) {
+                    $('adminLoginModal').style.display = 'none';
+                    $('loginPanel').style.display = 'none';
+                    $('adminPanel').style.display = 'block';
+                    loadAdminStats();
+                }
+            }).withFailureHandler(function (err) {
+                hideLoading();
+                toast(err.message);
+            }).validateAdminLogin(user, pass);
+        };
 
-         const switchAdminTab = (tab, el) => {
-             const tabs = el.parentElement.querySelectorAll('.tab');
-             tabs.forEach(t => t.classList.remove('active'));
-             el.classList.add('active');
+        const switchAdminTab = (tab, el) => {
+            const tabs = el.parentElement.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
 
-             if (tab === 'stats') {
-                 $('adminStatsView').style.display = 'block';
-                 $('adminSettingsView').style.display = 'none';
-             } else {
-                 $('adminStatsView').style.display = 'none';
-                 $('adminSettingsView').style.display = 'block';
-             }
-         };
+            if (tab === 'stats') {
+                $('adminStatsView').style.display = 'block';
+                $('adminSettingsView').style.display = 'none';
+            } else {
+                $('adminStatsView').style.display = 'none';
+                $('adminSettingsView').style.display = 'block';
+            }
+        };
 
-         const loadAdminStats = () => {
-             showLoading('جاري تحميل الإحصائيات...');
-             google.script.run.withSuccessHandler(function (data) {
-                 hideLoading();
-                 $('statTotalMentors').textContent = data.totalMentors;
-                 
-                 let totalReports = 0;
-                 let totalDiag = 0;
-                 const list = $('adminMentorsTable');
-                 list.innerHTML = '';
+        const loadAdminStats = () => {
+            showLoading('جاري تحميل الإحصائيات...');
+            google.script.run.withSuccessHandler(function (data) {
+                hideLoading();
+                $('statTotalMentors').textContent = data.totalMentors;
 
-                 const sortedMentors = Object.keys(data.mentors).sort();
-                 sortedMentors.forEach(m => {
-                     const s = data.mentors[m];
-                     totalReports += s.reports;
-                     totalDiag += s.diagnoses;
+                let totalReports = 0;
+                let totalDiag = 0;
+                const list = $('adminMentorsTable');
+                list.innerHTML = '';
 
-                     const tr = document.createElement('tr');
-                     tr.innerHTML = `
+                const sortedMentors = Object.keys(data.mentors).sort();
+                sortedMentors.forEach(m => {
+                    const s = data.mentors[m];
+                    totalReports += s.reports;
+                    totalDiag += s.diagnoses;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
                          <td><div style="font-weight:700">${m}</div></td>
                          <td><div style="font-size:11px; color:var(--muted)">${s.rounds.join(', ')}</div></td>
                          <td style="text-align:center">
@@ -3148,47 +3156,51 @@
                             <span class="badge ${s.diagnoses > 0 ? 'accent' : ''}">${s.diagnoses}</span>
                          </td>
                      `;
-                     list.appendChild(tr);
-                 });
+                    list.appendChild(tr);
+                });
 
-                 $('statTotalReports').textContent = totalReports;
-                 $('statTotalDiagnoses').textContent = totalDiag;
+                $('statTotalReports').textContent = totalReports;
+                $('statTotalDiagnoses').textContent = totalDiag;
 
-                 // populate settings inputs
-                 $('adminFormId').value = data.settings.formId;
-                 $('adminDiagId').value = data.settings.diagnoseId;
-                 $('linkReports').href = data.reportUrl;
-                 $('linkDiag').href = data.diagnoseUrl;
+                // populate settings inputs
+                $('adminFormId').value = data.settings.formId;
+                $('adminDiagId').value = data.settings.diagnoseId;
+                $('linkReports').href = data.reportUrl;
+                $('linkDiag').href = data.diagnoseUrl;
 
-             }).withFailureHandler(function (err) {
-                 hideLoading();
-                 toast(err.message);
-             }).getAdminStats();
-         };
+            }).withFailureHandler(function (err) {
+                hideLoading();
+                toast(err.message);
+            }).getAdminStats();
+        };
 
-         const checkDevPass = (val) => {
-             if (val === 'hzzz3m') {
-                 $('settingsLock').style.display = 'none';
-                 $('settingsContent').style.opacity = '1';
-                 $('settingsContent').style.pointerEvents = 'all';
-             }
-         };
+        const checkDevPass = (val) => {
+            if (val.trim() === 'hzzz3m') {
+                const lock = $('settingsLock');
+                const content = $('settingsContent');
+                if (lock) lock.style.setProperty('display', 'none', 'important');
+                if (content) {
+                    content.style.opacity = '1';
+                    content.style.pointerEvents = 'all';
+                }
+            }
+        };
 
-         const saveAdminSettings = () => {
-             const formId = $('adminFormId').value;
-             const diagId = $('adminDiagId').value;
-             const pass = $('devPass').value;
+        const saveAdminSettings = () => {
+            const formId = $('adminFormId').value;
+            const diagId = $('adminDiagId').value;
+            const pass = $('devPass').value;
 
-             showLoading('جاري الحفظ...');
-             google.script.run.withSuccessHandler(function () {
-                 hideLoading();
-                 toast('تم حفظ الإعدادات بنجاح');
-                 loadAdminStats(); // Refresh local variables
-             }).withFailureHandler(function (err) {
-                 hideLoading();
-                 toast(err.message);
-             }).updateSettings(formId, diagId, pass);
-         };
+            showLoading('جاري الحفظ...');
+            google.script.run.withSuccessHandler(function () {
+                hideLoading();
+                toast('تم حفظ الإعدادات بنجاح');
+                loadAdminStats(); // Refresh local variables
+            }).withFailureHandler(function (err) {
+                hideLoading();
+                toast(err.message);
+            }).updateSettings(formId, diagId, pass);
+        };
 
         const calculateAge = (dateStr) => {
             const start = new Date(dateStr);
