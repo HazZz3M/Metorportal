@@ -4081,10 +4081,17 @@
                     return `
                 <div class="f-session" onclick="toggleSession(this)">
                    <div class="f-session-header">
-                      <div class="f-session-num">Session ${s.num}</div>
+                      <div style="display:flex; flex-direction:column; gap:2px;">
+                         <div class="f-session-num">Session ${s.num}</div>
+                         <div style="font-size:10px; opacity:0.6; font-weight:700;">Mentor: ${s.score || '0.0'}</div>
+                      </div>
                       <div class="f-session-score" dir="auto">
-                         ${[1, 2, 3, 4, 5].map(v => `<span class="star-large" style="color: ${v <= (s.score || 0) ? '#fbbf24' : 'rgba(255,255,255,0.1)'};">★</span>`).join('')}
-                         <span style="font-size: 14px; margin-left: 6px; font-weight:900; opacity: 0.8;">${s.score || '0.0'}</span>
+                         ${(function() {
+                            const cats = [s.prodScore, s.opsScore, s.salesScore, s.mktScore, s.finScore];
+                            const sAvg = (cats.reduce((acc, v) => acc + parseFloat(v || 0), 0) / 5);
+                            return [1, 2, 3, 4, 5].map(v => `<span class="star-large" style="color: ${v <= Math.round(sAvg) ? '#fbbf24' : 'rgba(255,255,255,0.1)'};">★</span>`).join('') + 
+                                   `<span style="font-size: 14px; margin-left: 6px; font-weight:900; opacity: 0.8;">${sAvg.toFixed(1)}</span>`;
+                         })()}
                       </div>
                    </div>
 
