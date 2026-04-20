@@ -2711,6 +2711,86 @@
                         <div class="char-counter"><span class="count">0</span> / 1000</div>
                     </div>
 
+                    <div class="row" style="gap: 16px; margin-bottom: 24px;">
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label data-i18n="label_prod_score">تقييم المنتج</label>
+                                <div class="score-stars f-stars" data-field="fProdScore">
+                                    <span class="star" data-value="1">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="5">★</span>
+                                    <div class="score-value">0.0</div>
+                                </div>
+                                <input type="hidden" id="fProdScore" value="0.0">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label data-i18n="label_ops_score">تقييم العمليات</label>
+                                <div class="score-stars f-stars" data-field="fOpsScore">
+                                    <span class="star" data-value="1">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="5">★</span>
+                                    <div class="score-value">0.0</div>
+                                </div>
+                                <input type="hidden" id="fOpsScore" value="0.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="gap: 16px; margin-bottom: 24px;">
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label data-i18n="label_sales_score">تقييم المبيعات</label>
+                                <div class="score-stars f-stars" data-field="fSalesScore">
+                                    <span class="star" data-value="1">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="5">★</span>
+                                    <div class="score-value">0.0</div>
+                                </div>
+                                <input type="hidden" id="fSalesScore" value="0.0">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label data-i18n="label_mkt_score">تقييم التسويق</label>
+                                <div class="score-stars f-stars" data-field="fMktScore">
+                                    <span class="star" data-value="1">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="5">★</span>
+                                    <div class="score-value">0.0</div>
+                                </div>
+                                <input type="hidden" id="fMktScore" value="0.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="gap: 16px; margin-bottom: 24px;">
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label data-i18n="label_fin_score">تقييم الماليات</label>
+                                <div class="score-stars f-stars" data-field="fFinScore">
+                                    <span class="star" data-value="1">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="5">★</span>
+                                    <div class="score-value">0.0</div>
+                                </div>
+                                <input type="hidden" id="fFinScore" value="0.0">
+                            </div>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+
                     <div class="form-group" style="margin-bottom: 8px;">
                         <label data-i18n="label_mentor_score">Mentor Score (0 - 5)</label>
                         <div class="q-desc" data-i18n="desc_mentor_score">ايه هو تقييمك للشركه بشكل عام (حيث 5 هو الاعلي
@@ -2771,6 +2851,86 @@
                             Next Session</label>
                         <textarea id="efActions" dir="auto" maxlength="1000" oninput="updateCharCount(this)"></textarea>
                         <div class="char-counter"><span class="count">0</span> / 1000</div>
+                    </div>
+
+                    <div class="row" style="gap: 16px; margin-bottom: 24px;">
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label data-i18n="label_prod_score">تقييم المنتج</label>
+                                <div class="score-stars ef-stars-group" data-field="efProdScore">
+                                    <span class="star ef-star" data-value="1">★</span>
+                                    <span class="star ef-star" data-value="2">★</span>
+                                    <span class="star ef-star" data-value="3">★</span>
+                                    <span class="star ef-star" data-value="4">★</span>
+                                    <span class="star ef-star" data-value="5">★</span>
+                                    <div class="score-value">0.0</div>
+                                </div>
+                                <input type="hidden" id="efProdScore" value="0.0">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label data-i18n="label_ops_score">تقييم العمليات</label>
+                                <div class="score-stars ef-stars-group" data-field="efOpsScore">
+                                    <span class="star ef-star" data-value="1">★</span>
+                                    <span class="star ef-star" data-value="2">★</span>
+                                    <span class="star ef-star" data-value="3">★</span>
+                                    <span class="star ef-star" data-value="4">★</span>
+                                    <span class="star ef-star" data-value="5">★</span>
+                                    <div class="score-value">0.0</div>
+                                </div>
+                                <input type="hidden" id="efOpsScore" value="0.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="gap: 16px; margin-bottom: 24px;">
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label data-i18n="label_sales_score">تقييم المبيعات</label>
+                                <div class="score-stars ef-stars-group" data-field="efSalesScore">
+                                    <span class="star ef-star" data-value="1">★</span>
+                                    <span class="star ef-star" data-value="2">★</span>
+                                    <span class="star ef-star" data-value="3">★</span>
+                                    <span class="star ef-star" data-value="4">★</span>
+                                    <span class="star ef-star" data-value="5">★</span>
+                                    <div class="score-value">0.0</div>
+                                </div>
+                                <input type="hidden" id="efSalesScore" value="0.0">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label data-i18n="label_mkt_score">تقييم التسويق</label>
+                                <div class="score-stars ef-stars-group" data-field="efMktScore">
+                                    <span class="star ef-star" data-value="1">★</span>
+                                    <span class="star ef-star" data-value="2">★</span>
+                                    <span class="star ef-star" data-value="3">★</span>
+                                    <span class="star ef-star" data-value="4">★</span>
+                                    <span class="star ef-star" data-value="5">★</span>
+                                    <div class="score-value">0.0</div>
+                                </div>
+                                <input type="hidden" id="efMktScore" value="0.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="gap: 16px; margin-bottom: 24px;">
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label data-i18n="label_fin_score">تقييم الماليات</label>
+                                <div class="score-stars ef-stars-group" data-field="efFinScore">
+                                    <span class="star ef-star" data-value="1">★</span>
+                                    <span class="star ef-star" data-value="2">★</span>
+                                    <span class="star ef-star" data-value="3">★</span>
+                                    <span class="star ef-star" data-value="4">★</span>
+                                    <span class="star ef-star" data-value="5">★</span>
+                                    <div class="score-value">0.0</div>
+                                </div>
+                                <input type="hidden" id="efFinScore" value="0.0">
+                            </div>
+                        </div>
+                        <div class="col"></div>
                     </div>
 
                     <div class="form-group">
@@ -2997,7 +3157,7 @@
          * 1. Deploy your Apps Script as a Web App (Anyone with access)
          * 2. Paste the executable URL (/exec) below
          */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx_ThcfdhqR8ZGiWBGDmyg-04LeAW8MTwGYEpVva4gLDAYvgQV9CJ0vnCDGUKzoH6TR/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxL3xTjrWPhbklKFO7eDrknZvZh0b9KkACEfcZtTJOA2lu_rCv1iTU8jxCZGki3ado/exec";
 
         // google.script.run Bridge (Shim) for environments outside of GAS (like GitHub Pages)
         if (typeof google === 'undefined' || !google.script || !google.script.run) {
@@ -3078,6 +3238,11 @@
                 placeholder_achievements: "Enter achievements...", label_action_steps: "Action Steps",
                 desc_action_steps: "What should be done before next session?", placeholder_next_steps: "Enter next steps...",
                 label_mentor_score: "Mentor Score (0 - 5)", desc_mentor_score: "Overall evaluation of the startup.",
+                label_prod_score: "Product Evaluation",
+                label_ops_score: "Operations Evaluation",
+                label_sales_score: "Sales Evaluation",
+                label_mkt_score: "Marketing Evaluation",
+                label_fin_score: "Finance Evaluation",
                 btn_cancel: "Cancel", btn_submit: "Submit Feedback", modal_diagnosing_title: "Diagnosing Tool",
                 label_company_age: "Company Age", placeholder_age: "e.g. 3 years 2 months", label_location: "Location",
                 label_team_size: "Team Size", label_history: "History", desc_history: "Previous interventions...",
@@ -3096,7 +3261,7 @@
             },
             ar: {
                 brand: "بوابة الموجه", tab_info: "معلومات", tab_feedbacks: "التقرير", signin_title: "تسجيل الدخول",
-                signin_tag: "الوصول إلى الشركات المخصصة لك", label_round: "الدورات المتاحة", loading_rounds: "جاري البحث عن الدورات المتاحة ...",
+                signin_tag: "الوصول إلى الشركات المخصصة لك", label_round: "اختر الدورة", loading_rounds: "جاري تحميل الدورات...",
                 label_mentor: "اختر اسم الموجه", select_round_first: "اختر الدورة أولاً", label_pin: "رمز الدخول (إن وجد)",
                 btn_signin: "تسجيل الدخول", mentor_title: "الموجه", btn_refresh: "تحديث", btn_logout: "خروج",
                 label_company: "الشركة", label_start_date: "تاريخ البدء", label_stage: "المرحلة", label_traction: "النمو",
@@ -3106,10 +3271,15 @@
                 label_round_f: "الدورة", label_company_name: "اسم الشركة", placeholder_company: "ابحث واختر الشركة...",
                 label_day: "يوم الجلسة", select_day: "اختر اليوم", label_status: "الوضع الحالي",
                 desc_status: "يرجى توضيح المرحلة التي وصلت إليها الشركة حاليًا وأي جوانب تحتاج إلى دعم أو تطوير", placeholder_desc: "أدخل الوصف...",
-                label_achievements: "الإنجازات منذ الجلسة الأخيرة", desc_achievements: "يرجى توضيح الخطوات أو المهام التي تم الاتفاق عليها في الجلسة السابقة، وما الذي تم تنفيذه منها بالفعل. في حال وجود مهام لم يتم تنفيذها، يرجى ذكر الأسباب أو التحديات التي منعت تنفيذها.",
+                label_achievements: "الإنجازات منذ الجلسة الأخيرة", desc_achievements: "يرجى توضيح الخطوات أو المهام التي تم الاتفاق عليها في الجلسة السابقة.",
                 placeholder_achievements: "أدخل الإنجازات...", label_action_steps: "خطوات العمل القادمة",
-                desc_action_steps: "بناءً على تقييم وضع الشركة الحالي ونتائج الجلسة، يرجى تحديد الخطوات العملية التي ينبغي على الشركة تنفيذها قبل الجلسة القادمة، مع التركيز على الإجراءات القابلة للتنفيذ التي ستساهم في تقدم الشركة.", placeholder_next_steps: "أدخل الخطوات القادمة...",
+                desc_action_steps: "ما هي الخطوات العملية التي ينبغي تنفيذها قبل الجلسة القادمة؟", placeholder_next_steps: "أدخل الخطوات القادمة...",
                 label_mentor_score: "تقييم الموجه (0 - 5)", desc_mentor_score: "ما هو تقييمك للشركة بشكل عام؟",
+                label_prod_score: "تقييم المنتج",
+                label_ops_score: "تقييم العمليات",
+                label_sales_score: "تقييم المبيعات",
+                label_mkt_score: "تقييم التسويق",
+                label_fin_score: "تقييم الماليات",
                 btn_cancel: "إلغاء", btn_submit: "إرسال التقرير", modal_diagnosing_title: "أداة التشخيص",
                 label_company_age: "عمر الشركة", placeholder_age: "مثلاً: 3 سنوات شهرين", label_location: "النطاق ",
                 label_team_size: "عدد أفراد الفريق", label_history: "تاريخ التدخلات", desc_history: "التدخلات السابقة لحل هذه الشكوى أو أي شكوى أخرى",
@@ -3186,6 +3356,15 @@
             document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
             $('fScoreValue').textContent = '0.0';
             $('fScore').value = '0.0';
+            ['fProdScore', 'fOpsScore', 'fSalesScore', 'fMktScore', 'fFinScore'].forEach(id => {
+                $(id).value = '0.0';
+                const container = $(id).parentElement.querySelector('.score-stars');
+                if (container) {
+                    container.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                    const valEl = container.querySelector('.score-value');
+                    if (valEl) valEl.textContent = '0.0';
+                }
+            });
 
             // Reset counters
             document.querySelectorAll('.char-counter .count').forEach(c => c.textContent = '0');
@@ -3569,10 +3748,36 @@
             const val = parseFloat(score || 0);
             $('efScore').value = val.toFixed(1);
             $('efScoreValue').textContent = val.toFixed(1);
-            document.querySelectorAll('.ef-star').forEach(x => {
+            document.querySelectorAll('#efStarRating .ef-star').forEach(x => {
                 if (parseInt(x.getAttribute('data-value')) <= val) x.classList.add('active');
                 else x.classList.remove('active');
             });
+
+            // Populating new evaluations for edit
+            const currentItem = followUpData.find(c => c.company.toLowerCase() === company.toLowerCase());
+            const currentSession = currentItem ? currentItem.sessions.find(s => s.num === sessionNum) : null;
+            if (currentSession) {
+                const fields = [
+                    { id: 'efProdScore', val: currentSession.prodScore },
+                    { id: 'efOpsScore', val: currentSession.opsScore },
+                    { id: 'efSalesScore', val: currentSession.salesScore },
+                    { id: 'efMktScore', val: currentSession.mktScore },
+                    { id: 'efFinScore', val: currentSession.finScore }
+                ];
+                fields.forEach(f => {
+                    const v = parseFloat(f.val || 0);
+                    $(f.id).value = v.toFixed(1);
+                    const container = $(f.id).parentElement.querySelector('.score-stars');
+                    if (container) {
+                        container.querySelectorAll('.star').forEach(s => {
+                            if (parseInt(s.getAttribute('data-value')) <= v) s.classList.add('active');
+                            else s.classList.remove('active');
+                        });
+                        const valEl = container.querySelector('.score-value');
+                        if (valEl) valEl.textContent = v.toFixed(1);
+                    }
+                });
+            }
 
             ['efStatus', 'efAchievements', 'efActions'].forEach(id => updateCharCount($(id)));
 
@@ -4123,18 +4328,28 @@
                 }).submitDiagnose(formData);
             });
 
-            // Star rating logic
-            const stars = document.querySelectorAll('.star');
-            stars.forEach(s => {
-                s.addEventListener('click', function () {
-                    const val = parseInt(this.getAttribute('data-value'));
-                    $('fScore').value = val.toFixed(1);
-                    $('fScoreValue').textContent = val.toFixed(1);
-                    stars.forEach(x => {
-                        if (parseInt(x.getAttribute('data-value')) <= val) x.classList.add('active');
-                        else x.classList.remove('active');
+            // Star rating logic (Generic for all star groups)
+            document.querySelectorAll('.score-stars').forEach(container => {
+                const stars = container.querySelectorAll('.star');
+                const fieldId = container.getAttribute('data-field') || (container.id === 'starRating' ? 'fScore' : (container.id === 'efStarRating' ? 'efScore' : null));
+                if (!fieldId) return;
+
+                stars.forEach(s => {
+                    s.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        const val = parseInt(this.getAttribute('data-value'));
+                        const input = $(fieldId);
+                        if (input) input.value = val.toFixed(1);
+                        
+                        const scoreValGroup = container.querySelector('.score-value');
+                        if (scoreValGroup) scoreValGroup.textContent = val.toFixed(1);
+                        
+                        stars.forEach(x => {
+                            if (parseInt(x.getAttribute('data-value')) <= val) x.classList.add('active');
+                            else x.classList.remove('active');
+                        });
+                        markDirty();
                     });
-                    markDirty();
                 });
             });
 
@@ -4156,6 +4371,11 @@
                     currentStatus: $('fStatus').value,
                     achievements: $('fAchievements').value,
                     actionSteps: $('fActionSteps').value,
+                    prodScore: $('fProdScore').value,
+                    opsScore: $('fOpsScore').value,
+                    salesScore: $('fSalesScore').value,
+                    mktScore: $('fMktScore').value,
+                    finScore: $('fFinScore').value,
                     mentorScore: $('fScore').value,
                     roundName: (currentRound || 'R_01').replace('R_', 'Round_')
                 };
@@ -4221,6 +4441,11 @@
                     status: $('efStatus').value,
                     achievements: $('efAchievements').value,
                     actions: $('efActions').value,
+                    prodScore: $('efProdScore').value,
+                    opsScore: $('efOpsScore').value,
+                    salesScore: $('efSalesScore').value,
+                    mktScore: $('efMktScore').value,
+                    finScore: $('efFinScore').value,
                     score: $('efScore').value
                 };
 
@@ -4277,9 +4502,31 @@
                         const score = parseFloat(session.score || 0);
                         $('fScore').value = score.toFixed(1);
                         $('fScoreValue').textContent = score.toFixed(1);
-                        document.querySelectorAll('.star').forEach(s => {
+                        document.querySelectorAll('#starRating .star').forEach(s => {
                             if (parseInt(s.getAttribute('data-value')) <= score) s.classList.add('active');
                             else s.classList.remove('active');
+                        });
+
+                        // Populating new evaluations for day switch
+                        const fields = [
+                            { id: 'fProdScore', val: session.prodScore },
+                            { id: 'fOpsScore', val: session.opsScore },
+                            { id: 'fSalesScore', val: session.salesScore },
+                            { id: 'fMktScore', val: session.mktScore },
+                            { id: 'fFinScore', val: session.finScore }
+                        ];
+                        fields.forEach(f => {
+                            const v = parseFloat(f.val || 0);
+                            $(f.id).value = v.toFixed(1);
+                            const container = $(f.id).parentElement.querySelector('.score-stars');
+                            if (container) {
+                                container.querySelectorAll('.star').forEach(s => {
+                                    if (parseInt(s.getAttribute('data-value')) <= v) s.classList.add('active');
+                                    else s.classList.remove('active');
+                                });
+                                const valEl = container.querySelector('.score-value');
+                                if (valEl) valEl.textContent = v.toFixed(1);
+                            }
                         });
 
                         lastLoadedDay = this.value; // Track that we loaded this day
@@ -4290,7 +4537,18 @@
                             ['fStatus', 'fAchievements', 'fActionSteps'].forEach(id => $(id).value = '');
                             $('fScore').value = '0.0';
                             $('fScoreValue').textContent = '0.0';
-                            document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                            document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('active'));
+                            
+                            // Reset new stars
+                            ['fProdScore', 'fOpsScore', 'fSalesScore', 'fMktScore', 'fFinScore'].forEach(id => {
+                                $(id).value = '0.0';
+                                const container = $(id).parentElement.querySelector('.score-stars');
+                                if (container) {
+                                    container.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+                                    const valEl = container.querySelector('.score-value');
+                                    if (valEl) valEl.textContent = '0.0';
+                                }
+                            });
                         }
                         lastLoadedDay = null;
                         $('fSubmitBtn').textContent = i18n[lang].btn_submit;
