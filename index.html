@@ -3221,6 +3221,16 @@
         const hideLoading = () => { const l = $('loading'); l.style.display = 'none' }
         const toast = (msg) => { const t = $('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none' }, 2500) }
         const setSkeleton = (on) => { ['descV', 'startV', 'stageV', 'tractV', 'revV'].forEach(id => { const el = $(id); if (on) { el.classList.add('skeleton') } else { el.classList.remove('skeleton') } }) }
+        
+        const normalizeArabic = (str) => {
+            if (!str) return "";
+            return str.toString()
+                .trim()
+                .replace(/[أإآ]/g, "ا")
+                .replace(/ة/g, "ه")
+                .replace(/ى/g, "ي")
+                .toLowerCase();
+        };
         const i18n = {
             en: {
                 brand: "Mentor Portal", tab_info: "Info", tab_feedbacks: "Feedbacks", signin_title: "Sign In",
@@ -4063,7 +4073,7 @@
             </div>
             <div class="f-sessions">
               ${activeSessions.map(s => {
-                    const isOwner = s.mentor && currentMentor && s.mentor.toLowerCase() === currentMentor.toLowerCase();
+                    const isOwner = s.mentor && currentMentor && normalizeArabic(s.mentor) === normalizeArabic(currentMentor);
                     const hasLongActions = s.actions && s.actions.length > 150;
                     const hasLongAchievements = s.achievements && s.achievements.length > 150;
                     const hasLongStatus = s.status && s.status.length > 150;
@@ -4461,7 +4471,7 @@
                     hideLoading();
                     toast('Error: ' + err.message);
                     btn.disabled = false;
-                }).updateFollowupSession(params.roundId, params.companyName, params.sessionNum, params.status, params.achievements, params.actions, params.score);
+                }).updateFollowupSession(params.roundId, params.companyName, params.sessionNum, params.status, params.achievements, params.actions, params.prodScore, params.opsScore, params.salesScore, params.mktScore, params.finScore, params.score);
             });
 
             // Star rating for Edit
